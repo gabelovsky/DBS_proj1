@@ -12,6 +12,8 @@ import javafx.scene.control.Label;
 
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
+
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
@@ -20,6 +22,10 @@ import javafx.scene.layout.GridPane;
 public class Res_tab extends Tab {
  
 	
+	Button search_button;
+	NumberTextField room_field;
+	@SuppressWarnings("rawtypes")
+	TableView mid_table;
 	
 	Res_tab(){
 		setText("Reservations");
@@ -35,10 +41,22 @@ public class Res_tab extends Tab {
 		
 	}
 	
+	public Button get_search_button(){
+		 return search_button;
+	}
+	public TextField get_room_field(){
+		return room_field;
+	}
+	@SuppressWarnings("rawtypes")
+	public TableView get_mid_display(){
+		return mid_table;
+	}
+	
+	
 	void create_top(BorderPane border_p){
 		GridPane top_grid= new GridPane();
 		Label room_label=new Label("Room number");
-		TextField room_field=new TextField();
+		room_field=new NumberTextField();
 		Label floor_label=new Label("Floor");
 		ComboBoxC floor_box=new ComboBoxC("-","0","1","2");
 		Label type_label=new Label("Type");
@@ -51,7 +69,7 @@ public class Res_tab extends Tab {
 		ComboBoxC extra1_box=new ComboBoxC("-","Sauna","Balcony","Pool access");
 		Label extra2_label= new Label("Extra 2");
 		ComboBoxC extra2_box=new ComboBoxC("-","Sauna","Balcony","Pool access");
-		Button search_button=new Button("Search room");
+		search_button=new Button("Search room");
 		
 		Label from_label=new Label("From:");
 		ComboBoxC from_y_box=new ComboBoxC("2016","2017","2018");
@@ -112,8 +130,14 @@ public class Res_tab extends Tab {
 	}
 	void create_mid(BorderPane border_p){
 		ScrollPane mid_scroll= new ScrollPane();
-		TextArea mid_display=new TextArea();
-		mid_scroll.setContent(mid_display);
+		
+		mid_table=new TableView<Object>();
+		mid_table.setEditable(true);
+		
+		
+		mid_table.setPlaceholder(new Label(""));
+		 
+		mid_scroll.setContent(mid_table);
 		mid_scroll.setPadding(new Insets(10));
 		mid_scroll.setFitToHeight(true);
 		mid_scroll.setFitToWidth(true); ///better solution?
@@ -147,7 +171,7 @@ public class Res_tab extends Tab {
 		TextField pay_id_field=new TextField();
 		Label card_label=new Label("Card number:");
 		TextField card_field=new TextField();
-		
+		Button confirm_button=new Button("Confirm");
 		
 		
 		bot_grid.add(res_label, 0, 0,2,1);
@@ -176,6 +200,12 @@ public class Res_tab extends Tab {
 		
 		bot_grid.add(card_label, 1, 8);
 		bot_grid.add(card_field, 1, 9);
+		bot_grid.add(confirm_button, 4, 6,2,2);
+		
+		
+		
+		confirm_button.setPrefHeight(50);
+		confirm_button.setPrefWidth(100);
 		//bot_grid.setGridLinesVisible(true);
 		total_area.setPrefSize(150, 80);
 		bot_grid.setVgap(10);
