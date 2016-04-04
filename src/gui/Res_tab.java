@@ -24,6 +24,19 @@ public class Res_tab extends Tab {
 	
 	Button search_button;
 	NumberTextField room_field;
+	ComboBoxC floor_box;
+	ComboBoxC type_box;
+	ComboBoxC ali_box;
+	ComboBoxC price_box;
+	ComboBoxC from_y_box;
+	ComboBoxC from_m_box;
+	TextField from_d_field;
+	ComboBoxC to_y_box;
+	ComboBoxC to_m_box;
+	TextField to_d_field;
+	Button confirm_button;
+	
+	
 	@SuppressWarnings("rawtypes")
 	TableView mid_table;
 	
@@ -51,6 +64,40 @@ public class Res_tab extends Tab {
 	public TableView get_mid_display(){
 		return mid_table;
 	}
+	public ComboBoxC get_floor_box(){
+		return floor_box;
+	}
+	public ComboBoxC get_type_box(){
+		return type_box;
+	}
+	public ComboBoxC get_ali_box(){
+		return ali_box;
+	}
+	public ComboBoxC get_price_box(){
+		return price_box;
+	}
+	public ComboBoxC get_from_y(){
+		return from_y_box;
+	}
+	public ComboBoxC get_from_m(){
+		return from_m_box;
+	}
+	public TextField get_from_d(){
+		return from_d_field;
+	}
+	public ComboBoxC get_to_y(){
+		return to_y_box;
+	}
+	public ComboBoxC get_to_m(){
+		return to_m_box;
+	}
+	public TextField get_to_d(){
+		return to_d_field;
+	}
+	public Button get_confirm_button(){
+		return confirm_button;
+	}
+	
 	
 	
 	void create_top(BorderPane border_p){
@@ -58,13 +105,13 @@ public class Res_tab extends Tab {
 		Label room_label=new Label("Room number");
 		room_field=new NumberTextField();
 		Label floor_label=new Label("Floor");
-		ComboBoxC floor_box=new ComboBoxC("-","0","1","2");
+		floor_box=new ComboBoxC("-","0","1","2");
 		Label type_label=new Label("Type");
-		ComboBoxC type_box=new ComboBoxC("-","Cheap","Luxury","2 man");
+		type_box=new ComboBoxC("-","Cheap","Luxury","2 man");
 		Label ali_label=new Label("Alignment");
-		ComboBoxC ali_box=new ComboBoxC("-","North","South-E","South");
+		ali_box=new ComboBoxC("-","North","South-E","South");
 		Label price_label=new Label("Price");
-		ComboBoxC price_box=new ComboBoxC("-","-50","50-80","80-150","150+");
+		price_box=new ComboBoxC("-","50-","50-80","80-150","150+");
 		Label extra1_label= new Label("Extra 1");
 		ComboBoxC extra1_box=new ComboBoxC("-","Sauna","Balcony","Pool access");
 		Label extra2_label= new Label("Extra 2");
@@ -72,16 +119,16 @@ public class Res_tab extends Tab {
 		search_button=new Button("Search room");
 		
 		Label from_label=new Label("From:");
-		ComboBoxC from_y_box=new ComboBoxC("2016","2017","2018");
-		ComboBoxC from_m_box=new ComboBoxC("1","2","3","4","5","6","7","8","9","10","11","12");
-		TextField from_d_field=new TextField(String.valueOf(Calendar.getInstance().get(Calendar.DAY_OF_MONTH)));
+		from_y_box=new ComboBoxC("2016","2017","2018");
+		from_m_box=new ComboBoxC("1","2","3","4","5","6","7","8","9","10","11","12");
+		from_d_field=new TextField(String.valueOf(Calendar.getInstance().get(Calendar.DAY_OF_MONTH)));
 		from_m_box.getSelectionModel().select(String.valueOf(Calendar.getInstance().get(Calendar.MONTH)+1));
 		from_y_box.getSelectionModel().select(String.valueOf(Calendar.getInstance().get(Calendar.YEAR)));
 		
 		Label to_label=new Label("To:");
-		ComboBoxC to_y_box=new ComboBoxC("2016","2017","2018");
-		ComboBoxC to_m_box=new ComboBoxC("1","2","3","4","5","6","7","8","9","10","11","12");
-		TextField to_d_field=new TextField(String.valueOf(Calendar.getInstance().get(Calendar.DAY_OF_MONTH)));
+		to_y_box=new ComboBoxC("2016","2017","2018");
+		to_m_box=new ComboBoxC("1","2","3","4","5","6","7","8","9","10","11","12");
+		to_d_field=new TextField(String.valueOf(Calendar.getInstance().get(Calendar.DAY_OF_MONTH)+1));
 		to_m_box.getSelectionModel().select(String.valueOf(Calendar.getInstance().get(Calendar.MONTH)+1));
 		to_y_box.getSelectionModel().select(String.valueOf(Calendar.getInstance().get(Calendar.YEAR)));
 		
@@ -171,7 +218,7 @@ public class Res_tab extends Tab {
 		TextField pay_id_field=new TextField();
 		Label card_label=new Label("Card number:");
 		TextField card_field=new TextField();
-		Button confirm_button=new Button("Confirm");
+		 confirm_button=new Button("Confirm");
 		
 		
 		bot_grid.add(res_label, 0, 0,2,1);
