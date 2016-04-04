@@ -4,7 +4,10 @@ import javafx.scene.control.TextField;
 //class for number only textfield
 public class NumberTextField extends TextField
 {
-
+	NumberTextField(String... str){
+		for(String st:str)
+		this.setText(st);
+	}
     @Override
     public void replaceText(int start, int end, String text)
     {

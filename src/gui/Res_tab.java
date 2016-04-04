@@ -2,22 +2,17 @@ package gui;
 
 
 import java.util.Calendar;
-
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-
-
 import javafx.scene.control.Label;
-
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
-
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+
 
 public class Res_tab extends Tab {
  
@@ -30,27 +25,30 @@ public class Res_tab extends Tab {
 	ComboBoxC price_box;
 	ComboBoxC from_y_box;
 	ComboBoxC from_m_box;
-	TextField from_d_field;
+	NumberTextField from_d_field;
 	ComboBoxC to_y_box;
 	ComboBoxC to_m_box;
-	TextField to_d_field;
+	NumberTextField to_d_field;
 	Button confirm_button;
 	
+	TextField res_name_field;
+	NumberTextField res_id_field;
+	Label total_area;
+	ComboBoxC pay_box;
+	TextField pay_name_field;
+	NumberTextField pay_id_field;
+	NumberTextField card_field;
 	
 	@SuppressWarnings("rawtypes")
 	TableView mid_table;
 	
 	Res_tab(){
 		setText("Reservations");
-
 		BorderPane border_p = new BorderPane();
-		
 		create_top(border_p);
 		create_mid(border_p);
 		create_bot(border_p);
-		setContent(border_p);
-		
-		
+		setContent(border_p);	
 		
 	}
 	
@@ -82,7 +80,7 @@ public class Res_tab extends Tab {
 	public ComboBoxC get_from_m(){
 		return from_m_box;
 	}
-	public TextField get_from_d(){
+	public NumberTextField get_from_d(){
 		return from_d_field;
 	}
 	public ComboBoxC get_to_y(){
@@ -91,11 +89,32 @@ public class Res_tab extends Tab {
 	public ComboBoxC get_to_m(){
 		return to_m_box;
 	}
-	public TextField get_to_d(){
+	public NumberTextField get_to_d(){
 		return to_d_field;
 	}
 	public Button get_confirm_button(){
 		return confirm_button;
+	}
+	public TextField get_res_name(){
+		return  res_name_field;
+	}
+	public TextField get_res_id(){
+		return  res_id_field;
+	}
+	public Label get_total_area(){
+		return total_area;
+	}
+	public ComboBoxC get_pay_box(){
+		return pay_box;
+	}
+	public TextField get_pay_name(){
+		return  pay_name_field;
+	}
+	public TextField get_pay_id(){
+		return pay_id_field;
+	}
+	public TextField get_card_field(){
+		return card_field;
 	}
 	
 	
@@ -121,14 +140,14 @@ public class Res_tab extends Tab {
 		Label from_label=new Label("From:");
 		from_y_box=new ComboBoxC("2016","2017","2018");
 		from_m_box=new ComboBoxC("1","2","3","4","5","6","7","8","9","10","11","12");
-		from_d_field=new TextField(String.valueOf(Calendar.getInstance().get(Calendar.DAY_OF_MONTH)));
+		from_d_field=new NumberTextField(String.valueOf(Calendar.getInstance().get(Calendar.DAY_OF_MONTH)));
 		from_m_box.getSelectionModel().select(String.valueOf(Calendar.getInstance().get(Calendar.MONTH)+1));
 		from_y_box.getSelectionModel().select(String.valueOf(Calendar.getInstance().get(Calendar.YEAR)));
 		
 		Label to_label=new Label("To:");
 		to_y_box=new ComboBoxC("2016","2017","2018");
 		to_m_box=new ComboBoxC("1","2","3","4","5","6","7","8","9","10","11","12");
-		to_d_field=new TextField(String.valueOf(Calendar.getInstance().get(Calendar.DAY_OF_MONTH)+1));
+		to_d_field=new NumberTextField(String.valueOf(Calendar.getInstance().get(Calendar.DAY_OF_MONTH)+1));
 		to_m_box.getSelectionModel().select(String.valueOf(Calendar.getInstance().get(Calendar.MONTH)+1));
 		to_y_box.getSelectionModel().select(String.valueOf(Calendar.getInstance().get(Calendar.YEAR)));
 		
@@ -197,9 +216,9 @@ public class Res_tab extends Tab {
 		
 		Label res_label=new Label("Reservation:");
 		Label res_name_label=new Label("Name:");
-		TextField res_name_field=new TextField();
+		res_name_field=new TextField();
 		Label res_id_label=new Label("Identity number:");
-		TextField res_id_field=new TextField();
+		res_id_field=new NumberTextField();
 		Label ser1_label=new Label("Service 1");
 		ComboBoxC ser1_box=new ComboBoxC("-","Golf","Beauty pack small","Beauty pack large","Massage");
 		Label ser2_label=new Label("Service 2");
@@ -207,18 +226,18 @@ public class Res_tab extends Tab {
 		Label ser3_label=new Label("Service 3");
 		ComboBoxC ser3_box=new ComboBoxC("-","Golf","Beauty pack small","Beauty pack large","Massage");
 		Label total_label=new Label("Total:");
-		TextArea total_area=new TextArea();
+		total_area=new Label();
 		
 		Label bill_label=new Label("Billing:");
 		Label pay_label=new Label("Payment method:");
-		ComboBoxC pay_box=new ComboBoxC("Cash","Card","Prepaid card");
+		pay_box=new ComboBoxC("Cash","Card","Prepaid card");
 		Label pay_name_label=new Label("Name:");
-		TextField pay_name_field=new TextField();
+		pay_name_field=new TextField();
 		Label pay_id_label=new Label("Identity number:");
-		TextField pay_id_field=new TextField();
+		pay_id_field=new NumberTextField();
 		Label card_label=new Label("Card number:");
-		TextField card_field=new TextField();
-		 confirm_button=new Button("Confirm");
+		card_field=new NumberTextField();
+		confirm_button=new Button("Confirm");
 		
 		
 		bot_grid.add(res_label, 0, 0,2,1);
@@ -253,8 +272,13 @@ public class Res_tab extends Tab {
 		
 		confirm_button.setPrefHeight(50);
 		confirm_button.setPrefWidth(100);
-		//bot_grid.setGridLinesVisible(true);
+		
 		total_area.setPrefSize(150, 80);
+		total_area.setStyle("-fx-border-color:black;");
+		total_area.setAlignment(Pos.TOP_CENTER);
+	
+		
+	
 		bot_grid.setVgap(10);
 		bot_grid.setHgap(10);
 		bot_grid.setPadding(new Insets(10));

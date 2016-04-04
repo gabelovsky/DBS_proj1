@@ -13,8 +13,6 @@ public class Main_gui extends Application{
 
 	public static void main(String[] args) {
 		launch();
-	
-		
 		}
 
 	
@@ -31,7 +29,7 @@ public class Main_gui extends Application{
 		tp.getTabs().addAll(res_tab);
 		
 		
-		Mediator med=new Mediator(res_tab);
+		Mediator med=new Mediator(res_tab,main_stage);
 		@SuppressWarnings("unused")
 		control.Main_control mc=new control.Main_control(med);
 		
