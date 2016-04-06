@@ -7,16 +7,14 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Calendar;
 import java.util.Date;
-
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Service;
-import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.stage.WindowEvent;
@@ -55,9 +53,9 @@ public class Res_control {
 					
 					from_str="'"+med.get_res_tab().get_from_y().getValue()+"-"+med.get_res_tab().get_from_m().getValue()+"-"+med.get_res_tab().get_from_d().getText()+"'";
 					to_str="'"+med.get_res_tab().get_to_y().getValue()+"-"+med.get_res_tab().get_to_m().getValue()+"-"+med.get_res_tab().get_to_d().getText()+"'";
-					date_str=" AND (("+from_str+" NOT BETWEEN b.from_date AND b.to_date) AND ("+to_str+" NOT BETWEEN b.from_date AND b.to_date) AND ("+
-					from_str+"<b.from_date AND "+to_str+"<b.from_date OR "+from_str+">b.to_date AND "+to_str+">b.to_date) OR (r.id NOT IN (SELECT room FROM bookings)))";
-					
+					date_str=" AND(r.id NOT IN (SELECT room from bookings as bo where("+from_str+" BETWEEN bo.from_date AND bo.to_date) OR ("+to_str
+					+"BETWEEN bo.from_date AND bo.to_date) OR ("+from_str+"<=bo.from_date AND"+to_str+">=bo.to_date)))"; 
+					System.out.println(date_str);
 					if(!med.get_res_tab().get_room_field().getText().equals("")){
 						num_str=" AND r.number="+med.get_res_tab().get_room_field().getText();
 					}
@@ -92,7 +90,8 @@ public class Res_control {
 					
 					ResultSet rs=st.executeQuery("SELECT r.number,r.floor,r.type,r.alig,r.price FROM rooms AS r LEFT JOIN bookings AS b ON b.room=r.id WHERE TRUE"
 					+num_str+floor_str+type_str+ali_str+price_str+date_str+" ORDER BY r.number;");
-					
+					System.out.println("SELECT r.number,r.floor,r.type,r.alig,r.price FROM rooms AS r LEFT JOIN bookings AS b ON b.room=r.id WHERE TRUE"
+					+num_str+floor_str+type_str+ali_str+price_str+date_str+" ORDER BY r.number;");
 					
 				   //get columns //this rework!!
 					for(int i=0 ; i<rs.getMetaData().getColumnCount(); i++){
@@ -135,28 +134,37 @@ public class Res_control {
 		    @SuppressWarnings("unchecked")
 			public void handle(ActionEvent e) {
 		    	
+		    	
+		    	
+		    	
 		    	if(med.get_res_tab().get_mid_display().getSelectionModel().isEmpty()){
-		    		System.out.println("nothing selected");
+		    		((Label)med.get_pop_win().get_err_stage().getScene().getRoot()).setText("No room selected");
+		    		med.get_pop_win().get_err_stage().show();
 		    		return;
 		    	}		    	
 		    	if(med.get_res_tab().get_res_name().getText().equals("")){
-		    		System.out.println("res name miss");
+		    		((Label)med.get_pop_win().get_err_stage().getScene().getRoot()).setText("Reservation name missing");
+		    		med.get_pop_win().get_err_stage().show();
 		    		return;
 		    	}
 		    	if(med.get_res_tab().get_res_id().getText().equals("")){
-		    		System.out.println("res id missing");
+		    		((Label)med.get_pop_win().get_err_stage().getScene().getRoot()).setText("Reservation id missing");
+		    		med.get_pop_win().get_err_stage().show();
 		    		return;
 		    	}
 		    	if(med.get_res_tab().get_pay_name().getText().equals("")){
-		    		System.out.println("pay name miss");
+		    		((Label)med.get_pop_win().get_err_stage().getScene().getRoot()).setText("Billing name missing");
+		    		med.get_pop_win().get_err_stage().show();
 		    		return;
 		    	}
 		    	if(med.get_res_tab().get_pay_id().getText().equals("")){
-		    		System.out.println("pay id miss");
+		    		((Label)med.get_pop_win().get_err_stage().getScene().getRoot()).setText("Billing id missing");
+		    		med.get_pop_win().get_err_stage().show();
 		    		return;
 		    	}
 		    	if(!med.get_res_tab().get_pay_box().getValue().equals("Cash") && med.get_res_tab().get_card_field().getText().equals("")){
-		    		System.out.println("card num missing");
+		    		((Label)med.get_pop_win().get_err_stage().getScene().getRoot()).setText("Card number missing");
+		    		med.get_pop_win().get_err_stage().show();
 		    		return;
 		    	}
 		    	
@@ -185,7 +193,9 @@ public class Res_control {
 					int days = (int) ((to_date.getTime() - from_date.getTime()) / (1000 * 60 * 60 * 24));
 					int price= days*Integer.parseInt(row.get(4));
 					
-				
+					String cardnum="0";
+					if(!med.get_res_tab().get_pay_box().getValue().equals("Cash"))
+						cardnum=med.get_res_tab().get_card_field().getText();
 					
 					
 					ResultSet rs=st.executeQuery("SELECT perid FROM customers WHERE perid="+med.get_res_tab().get_res_id().getText());
@@ -195,13 +205,18 @@ public class Res_control {
 					
 					st.executeUpdate("INSERT INTO billings(name,perid,type,cardid,sum) VALUES ('"
 					+med.get_res_tab().get_pay_name().getText()+"',"+med.get_res_tab().get_pay_id().getText()
-					+",'"+med.get_res_tab().get_pay_box().getValue()+"',"+med.get_res_tab().get_card_field().getText()
-					+","+price+");"
-					);
-			
+					+",'"+med.get_res_tab().get_pay_box().getValue()+"',"+cardnum
+					+","+price+");"			
+					,Statement.RETURN_GENERATED_KEYS);
+					rs = st.getGeneratedKeys();
+					int key=0;
+					if ( rs.next() ) {
+						key = rs.getInt(1);
+					}
+					
 					st.executeUpdate("INSERT INTO bookings(from_date,to_date,room,customer,billing) VALUES "
 							+"("+from_str+","+to_str+",(SELECT id FROM rooms WHERE number="+row.get(0)+"),(SELECT id FROM customers WHERE perid="+med.get_res_tab().get_res_id().getText()
-							+"),(SELECT id FROM billings WHERE perid="+med.get_res_tab().get_pay_id().getText()+"));"
+							+"),"+Integer.toString(key)+");"
 							);
 				
 					rs.close();

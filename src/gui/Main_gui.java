@@ -20,16 +20,21 @@ public class Main_gui extends Application{
 	public void start(Stage main_stage) throws Exception {
 		
 		
+		Pop_win pop_win=new Pop_win();
+		pop_win.new_window();
+		
+		
 		
 		
 		TabPane tp=new TabPane();
 		Scene scene = new Scene(tp, 800, 800);
-		Res_tab res_tab=new Res_tab();
+		Tabs tabs=new Tabs();
 		
-		tp.getTabs().addAll(res_tab);
+	
+		tp.getTabs().addAll(tabs.get_res_tab(),tabs.get_search_tab());
 		
+		Mediator med=new Mediator(tabs,main_stage,pop_win);
 		
-		Mediator med=new Mediator(res_tab,main_stage);
 		@SuppressWarnings("unused")
 		control.Main_control mc=new control.Main_control(med);
 		
