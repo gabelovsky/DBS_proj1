@@ -61,11 +61,11 @@ public class Search_tab extends Tab{
 		
 		
 		Label room_label=new Label("Room number:");
-		NumberTextField room_field=new NumberTextField();
+		room_field=new NumberTextField();
 		Label name_label=new Label("Name:");
-		TextField name_field=new TextField();
+		name_field=new TextField();
 		Label id_label=new Label("Identity number:");
-		NumberTextField id_field=new NumberTextField();
+		id_field=new NumberTextField();
 		room_but=new Button("Room");
 		per_but=new Button("Person");
 		res_but=new Button("Reservation");

@@ -23,7 +23,7 @@ import mediator.Mediator;
 
 public class Res_control {
 	Mediator med;
-
+	
 	Res_control(Mediator med){
 		this.med=med;
 	}
@@ -40,7 +40,7 @@ public class Res_control {
 					Connection conn=DriverManager.getConnection(med.database, med.user, med.password);
 					Statement st=conn.createStatement();
 					med.get_res_tab().get_mid_display().getColumns().clear();
-			
+					
 					String []columns={"Number:","Floor:","Type:","Alig.:","Price:"};
 					String from_str;
 					String to_str;
@@ -51,11 +51,34 @@ public class Res_control {
 					String ali_str="";
 					String price_str="";
 					
+					
+					
+					
+					if(med.get_res_tab().get_from_d().getText().equals("")){
+			    		((Label)med.get_pop_win().get_err_stage().getScene().getRoot()).setText("From date empty");
+			    		med.get_pop_win().get_err_stage().show();
+			    		return;
+			    	}		
+
+					if(med.get_res_tab().get_to_d().getText().equals("")){
+			    		((Label)med.get_pop_win().get_err_stage().getScene().getRoot()).setText("To date empty");
+			    		med.get_pop_win().get_err_stage().show();
+			    		return;
+			    	}		
+					
+					int days = get_days();
+					if (days<=0){
+						((Label)med.get_pop_win().get_err_stage().getScene().getRoot()).setText("Wrong date set");
+			    		med.get_pop_win().get_err_stage().show();
+			    		return;
+					}
+					
+			
 					from_str="'"+med.get_res_tab().get_from_y().getValue()+"-"+med.get_res_tab().get_from_m().getValue()+"-"+med.get_res_tab().get_from_d().getText()+"'";
 					to_str="'"+med.get_res_tab().get_to_y().getValue()+"-"+med.get_res_tab().get_to_m().getValue()+"-"+med.get_res_tab().get_to_d().getText()+"'";
 					date_str=" AND(r.id NOT IN (SELECT room from bookings as bo where("+from_str+" BETWEEN bo.from_date AND bo.to_date) OR ("+to_str
 					+"BETWEEN bo.from_date AND bo.to_date) OR ("+from_str+"<=bo.from_date AND"+to_str+">=bo.to_date)))"; 
-					System.out.println(date_str);
+					
 					if(!med.get_res_tab().get_room_field().getText().equals("")){
 						num_str=" AND r.number="+med.get_res_tab().get_room_field().getText();
 					}
@@ -88,10 +111,9 @@ public class Res_control {
 					}
 					
 					
-					ResultSet rs=st.executeQuery("SELECT r.number,r.floor,r.type,r.alig,r.price FROM rooms AS r LEFT JOIN bookings AS b ON b.room=r.id WHERE TRUE"
+					ResultSet rs=st.executeQuery("SELECT DISTINCT r.number,r.floor,r.type,r.alig,r.price FROM rooms AS r LEFT JOIN bookings AS b ON b.room=r.id WHERE TRUE"
 					+num_str+floor_str+type_str+ali_str+price_str+date_str+" ORDER BY r.number;");
-					System.out.println("SELECT r.number,r.floor,r.type,r.alig,r.price FROM rooms AS r LEFT JOIN bookings AS b ON b.room=r.id WHERE TRUE"
-					+num_str+floor_str+type_str+ali_str+price_str+date_str+" ORDER BY r.number;");
+					
 					
 				   //get columns //this rework!!
 					for(int i=0 ; i<rs.getMetaData().getColumnCount(); i++){
@@ -218,7 +240,8 @@ public class Res_control {
 							+"("+from_str+","+to_str+",(SELECT id FROM rooms WHERE number="+row.get(0)+"),(SELECT id FROM customers WHERE perid="+med.get_res_tab().get_res_id().getText()
 							+"),"+Integer.toString(key)+");"
 							);
-				
+					med.get_res_tab().get_mid_display().getColumns().clear();
+					
 					rs.close();
 					st.close();
 					conn.close();
@@ -240,7 +263,7 @@ public class Res_control {
 							&& !med.get_res_tab().get_to_d().getText().equals("")){
 								
 								ObservableList<String> row=(ObservableList<String>) med.get_res_tab().get_mid_display().getSelectionModel().getSelectedItem();
-								Calendar cal = Calendar.getInstance();
+							/*	Calendar cal = Calendar.getInstance();
 								cal.set(Integer.parseInt(med.get_res_tab().get_from_y().getValue()),
 										Integer.parseInt(med.get_res_tab().get_from_m().getValue()),
 										Integer.parseInt(med.get_res_tab().get_from_d().getText()));
@@ -250,11 +273,13 @@ public class Res_control {
 										Integer.parseInt(med.get_res_tab().get_to_d().getText()));
 								Date to_date = cal.getTime();
 								
-								int days = (int) ((to_date.getTime() - from_date.getTime()) / (1000 * 60 * 60 * 24));
+								int days = (int) ((to_date.getTime() - from_date.getTime()) / (1000 * 60 * 60 * 24));*/
+								int days=get_days();
 								int price= days*Integer.parseInt(row.get(4));
+								
 								med.get_res_tab().get_total_area().setText("Days: "+Integer.toString(days)+"\nPrice total: "+Integer.toString(price)+"€");
 							}else{
-								med.get_res_tab().get_total_area().setText("No room selected");
+								med.get_res_tab().get_total_area().setText("No room selected\n or bad date");
 							}
 							
 							
@@ -277,6 +302,19 @@ public class Res_control {
 		});
 		th.start();
 		
+	}
+	int get_days(){
+		Calendar cal = Calendar.getInstance();
+		cal.set(Integer.parseInt(med.get_res_tab().get_from_y().getValue()),
+				Integer.parseInt(med.get_res_tab().get_from_m().getValue()),
+				Integer.parseInt(med.get_res_tab().get_from_d().getText()));
+		Date from_date = cal.getTime();
+		cal.set(Integer.parseInt(med.get_res_tab().get_to_y().getValue()),
+				Integer.parseInt(med.get_res_tab().get_to_m().getValue()),
+				Integer.parseInt(med.get_res_tab().get_to_d().getText()));
+		Date to_date = cal.getTime();
+		
+		return (int) ((to_date.getTime() - from_date.getTime()) / (1000 * 60 * 60 * 24));
 	}
 	
 }

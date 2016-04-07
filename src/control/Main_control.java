@@ -12,6 +12,8 @@ public class Main_control {
 		res.set_total_thread();
 		Search_control sea=new Search_control(med);
 		sea.set_room();
+		sea.set_person();
+		sea.set_reservation();
 	}
 	
 	
