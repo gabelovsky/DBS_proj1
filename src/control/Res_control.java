@@ -8,17 +8,11 @@ import java.sql.Statement;
 import java.util.Calendar;
 import java.util.Date;
 import javafx.application.Platform;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.stage.WindowEvent;
-import javafx.util.Callback;
 import mediator.Mediator;
 
 public class Res_control {
@@ -30,16 +24,16 @@ public class Res_control {
 	
 	void set_search(){
 		med.get_res_tab().get_search_button().setOnAction(new EventHandler<ActionEvent>() { 
-		    @SuppressWarnings({ "unchecked", "rawtypes" })
+		   
 			@Override
 		    public void handle(ActionEvent e) {
 		    	try {
 		    		
 		    		
 		    		
-					Connection conn=DriverManager.getConnection(med.database, med.user, med.password);
+					Connection conn=DriverManager.getConnection(med.get_database(), med.get_user(), med.get_password());
 					Statement st=conn.createStatement();
-					med.get_res_tab().get_mid_display().getColumns().clear();
+					
 					
 					String []columns={"Number:","Floor:","Type:","Alig.:","Price:"};
 					String from_str;
@@ -65,15 +59,32 @@ public class Res_control {
 			    		med.get_pop_win().get_err_stage().show();
 			    		return;
 			    	}		
+					if(Integer.parseInt(med.get_res_tab().get_from_d().getText())>31||Integer.parseInt(med.get_res_tab().get_from_d().getText())==0)	
+			    	{
+			    		((Label)med.get_pop_win().get_err_stage().getScene().getRoot()).setText("Wrong date set");
+			    		med.get_res_tab().get_mid_display().getColumns().clear();					
+			    		med.get_pop_win().get_err_stage().show();
+			    		return;
+			    	}
+					if(Integer.parseInt(med.get_res_tab().get_to_d().getText())>31||Integer.parseInt(med.get_res_tab().get_to_d().getText())==0)	
+			    	{
+			    		((Label)med.get_pop_win().get_err_stage().getScene().getRoot()).setText("Wrong date set");
+			    		med.get_res_tab().get_mid_display().getColumns().clear();
+			    		med.get_pop_win().get_err_stage().show();
+			    		return;
+			    	}
+					
+					
 					
 					int days = get_days();
+				
 					if (days<=0){
 						((Label)med.get_pop_win().get_err_stage().getScene().getRoot()).setText("Wrong date set");
+						med.get_res_tab().get_mid_display().getColumns().clear();
 			    		med.get_pop_win().get_err_stage().show();
 			    		return;
 					}
 					
-			
 					from_str="'"+med.get_res_tab().get_from_y().getValue()+"-"+med.get_res_tab().get_from_m().getValue()+"-"+med.get_res_tab().get_from_d().getText()+"'";
 					to_str="'"+med.get_res_tab().get_to_y().getValue()+"-"+med.get_res_tab().get_to_m().getValue()+"-"+med.get_res_tab().get_to_d().getText()+"'";
 					date_str=" AND(r.id NOT IN (SELECT room from bookings as bo where("+from_str+" BETWEEN bo.from_date AND bo.to_date) OR ("+to_str
@@ -115,32 +126,8 @@ public class Res_control {
 					+num_str+floor_str+type_str+ali_str+price_str+date_str+" ORDER BY r.number;");
 					
 					
-				   //get columns //this rework!!
-					for(int i=0 ; i<rs.getMetaData().getColumnCount(); i++){
-			                
-			                final int j = i;                
-			                TableColumn col = new TableColumn(/*rs.getMetaData().getColumnName(i+1)*/columns[i]);
-			               col.setCellValueFactory(new Callback<CellDataFeatures<ObservableList,String>,ObservableValue<String>>(){                    
-			                    public ObservableValue<String> call(CellDataFeatures<ObservableList, String> param) {                                                                                              
-			                        return new SimpleStringProperty(param.getValue().get(j).toString());                        
-			                    }                    
-			                });
-			                med.get_res_tab().get_mid_display().getColumns().addAll(col); 
-			               
-			            }
-
-					//set data
-					 ObservableList<ObservableList> data=FXCollections.observableArrayList();
-					 while(rs.next()){
-			                ObservableList<String> row = FXCollections.observableArrayList();
-			                for(int i=1 ; i<=rs.getMetaData().getColumnCount(); i++){
-			                    row.add(rs.getString(i));
-			                }
-			    
-			                data.add(row);
-			            }
-					 
-					 med.get_res_tab().get_mid_display().setItems(data);
+				
+					Table_fill.set_table(rs,columns, med.get_res_tab().get_mid_display());
 					
 			        
 					rs.close();
@@ -190,10 +177,10 @@ public class Res_control {
 		    		return;
 		    	}
 		    	
-		    	
+		    
 		    	
 				try {
-					Connection conn=DriverManager.getConnection(med.database, med.user, med.password);
+					Connection conn=DriverManager.getConnection(med.get_database(), med.get_user(), med.get_password());
 					Statement st=conn.createStatement();
 					
 					String from_str="'"+med.get_res_tab().get_from_y().getValue()+"-"+med.get_res_tab().get_from_m().getValue()+"-"+med.get_res_tab().get_from_d().getText()+"'";
@@ -220,7 +207,10 @@ public class Res_control {
 						cardnum=med.get_res_tab().get_card_field().getText();
 					
 					
-					ResultSet rs=st.executeQuery("SELECT perid FROM customers WHERE perid="+med.get_res_tab().get_res_id().getText());
+					ResultSet rs=st.executeQuery("SELECT perid FROM customers WHERE perid="+Integer.parseInt(med.get_res_tab().get_res_id().getText())+" AND name='"
+					+med.get_res_tab().get_res_name().getText()+"'");
+					
+					
 					if(!rs.next()){
 						st.executeUpdate("INSERT INTO customers(name,perid) VALUES ('"+med.get_res_tab().get_res_name().getText()+"',"+med.get_res_tab().get_res_id().getText()+");");
 					}
@@ -238,9 +228,9 @@ public class Res_control {
 					
 					st.executeUpdate("INSERT INTO bookings(from_date,to_date,room,customer,billing) VALUES "
 							+"("+from_str+","+to_str+",(SELECT id FROM rooms WHERE number="+row.get(0)+"),(SELECT id FROM customers WHERE perid="+med.get_res_tab().get_res_id().getText()
-							+"),"+Integer.toString(key)+");"
+							+" AND name='"+med.get_res_tab().get_res_name().getText()+"'),"+Integer.toString(key)+");"
 							);
-					med.get_res_tab().get_mid_display().getColumns().clear();
+					med.get_res_tab().get_mid_display().getItems().remove(med.get_res_tab().get_mid_display().getSelectionModel().getSelectedItem());
 					
 					rs.close();
 					st.close();
@@ -263,17 +253,7 @@ public class Res_control {
 							&& !med.get_res_tab().get_to_d().getText().equals("")){
 								
 								ObservableList<String> row=(ObservableList<String>) med.get_res_tab().get_mid_display().getSelectionModel().getSelectedItem();
-							/*	Calendar cal = Calendar.getInstance();
-								cal.set(Integer.parseInt(med.get_res_tab().get_from_y().getValue()),
-										Integer.parseInt(med.get_res_tab().get_from_m().getValue()),
-										Integer.parseInt(med.get_res_tab().get_from_d().getText()));
-								Date from_date = cal.getTime();
-								cal.set(Integer.parseInt(med.get_res_tab().get_to_y().getValue()),
-										Integer.parseInt(med.get_res_tab().get_to_m().getValue()),
-										Integer.parseInt(med.get_res_tab().get_to_d().getText()));
-								Date to_date = cal.getTime();
-								
-								int days = (int) ((to_date.getTime() - from_date.getTime()) / (1000 * 60 * 60 * 24));*/
+							
 								int days=get_days();
 								int price= days*Integer.parseInt(row.get(4));
 								
@@ -303,6 +283,7 @@ public class Res_control {
 		th.start();
 		
 	}
+	
 	int get_days(){
 		Calendar cal = Calendar.getInstance();
 		cal.set(Integer.parseInt(med.get_res_tab().get_from_y().getValue()),
@@ -313,6 +294,7 @@ public class Res_control {
 				Integer.parseInt(med.get_res_tab().get_to_m().getValue()),
 				Integer.parseInt(med.get_res_tab().get_to_d().getText()));
 		Date to_date = cal.getTime();
+		
 		
 		return (int) ((to_date.getTime() - from_date.getTime()) / (1000 * 60 * 60 * 24));
 	}

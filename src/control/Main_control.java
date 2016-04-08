@@ -1,5 +1,6 @@
 package control;
 
+
 import mediator.Mediator;
 
 public class Main_control {
@@ -14,7 +15,14 @@ public class Main_control {
 		sea.set_room();
 		sea.set_person();
 		sea.set_reservation();
+		sea.set_remove();
+		sea.set_edit();
+		Edit_control edi=new Edit_control(med);
+		edi.set_confirm();
+		edi.set_cancel();
 	}
+	
+	
 	
 	
 	

@@ -8,6 +8,7 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 public class Search_tab extends Tab{
@@ -15,6 +16,8 @@ public class Search_tab extends Tab{
 	Button room_but;
 	Button per_but;
 	Button res_but;
+	Button rem_but;
+	Button edit_but;
 	NumberTextField room_field;
 	TextField name_field;
 	NumberTextField id_field;
@@ -29,6 +32,12 @@ public class Search_tab extends Tab{
 	}
 	public Button get_res_but(){
 		return res_but;
+	}
+	public Button get_rem_but(){
+		return rem_but;
+	}
+	public Button get_edit_but(){
+		return edit_but;
 	}
 	public TextField get_room_field(){
 		return room_field;
@@ -57,6 +66,9 @@ public class Search_tab extends Tab{
 	void Create(VBox ver_b){
 		table=new TableView();
 		GridPane grid_p=new GridPane();
+		rem_but=new Button("Delete res.");
+		edit_but=new Button("Edit res.");
+		HBox hor_b=new HBox();
 		
 		
 		
@@ -85,15 +97,24 @@ public class Search_tab extends Tab{
 		grid_p.add(res_but, 3, 2,1,3);
 		
 		
+		
+		
+		
 		grid_p.setAlignment(Pos.CENTER);
 		grid_p.setMinHeight(200);
 		grid_p.setVgap(10);
 		grid_p.setHgap(10);
 		grid_p.setPadding(new Insets(10));
-		table.setPrefHeight(5000);
+		table.setPrefHeight(500);
 		table.setEditable(true);
 		table.setPlaceholder(new Label(""));
-		ver_b.getChildren().addAll(grid_p,table);
+		hor_b.getChildren().addAll(rem_but,edit_but);
+		hor_b.setAlignment(Pos.CENTER);
+		hor_b.setPadding(new Insets(10));
+		hor_b.setSpacing(20);
+		rem_but.setPrefSize(120, 65);
+		edit_but.setPrefSize(120, 65);
+		ver_b.getChildren().addAll(grid_p,table,hor_b);
 	}
 	 
 	 

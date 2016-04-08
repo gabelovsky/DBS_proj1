@@ -50,6 +50,7 @@ public class Res_tab extends Tab {
 		create_bot(border_p);
 		setContent(border_p);	
 		
+		
 	}
 	
 	public Button get_search_button(){
@@ -131,10 +132,10 @@ public class Res_tab extends Tab {
 		ali_box=new ComboBoxC("-","North","South-E","South");
 		Label price_label=new Label("Price");
 		price_box=new ComboBoxC("-","50-","50-80","80-150","150+");
-		Label extra1_label= new Label("Extra 1");
-		ComboBoxC extra1_box=new ComboBoxC("-","Sauna","Balcony","Pool access");
-		Label extra2_label= new Label("Extra 2");
-		ComboBoxC extra2_box=new ComboBoxC("-","Sauna","Balcony","Pool access");
+		//Label extra1_label= new Label("Extra 1");
+		//ComboBoxC extra1_box=new ComboBoxC("-","Sauna","Balcony","Pool access");
+		//Label extra2_label= new Label("Extra 2");
+		//ComboBoxC extra2_box=new ComboBoxC("-","Sauna","Balcony","Pool access");
 		search_button=new Button("Search room");
 		
 		Label from_label=new Label("From:");
@@ -162,10 +163,10 @@ public class Res_tab extends Tab {
 		top_grid.add(ali_box, 3, 1);
 		top_grid.add(price_label, 4, 0);
 		top_grid.add(price_box, 4, 1);
-		top_grid.add(extra1_label, 5, 0);
-		top_grid.add(extra1_box, 5, 1);
-		top_grid.add(extra2_label, 6, 0);
-		top_grid.add(extra2_box, 6, 1);
+		//top_grid.add(extra1_label, 5, 0);
+		//top_grid.add(extra1_box, 5, 1);
+		//top_grid.add(extra2_label, 6, 0);
+		//top_grid.add(extra2_box, 6, 1);
 		
 		
 		top_grid.add(from_label, 1, 2);
@@ -207,8 +208,10 @@ public class Res_tab extends Tab {
 		mid_scroll.setPadding(new Insets(10));
 		mid_scroll.setFitToHeight(true);
 		mid_scroll.setFitToWidth(true); ///better solution?
+		
 		mid_scroll.setStyle("-fx-background-color:transparent;");
 		border_p.setCenter(mid_scroll);
+		
 	}
 	void create_bot(BorderPane border_p){
 

@@ -5,7 +5,7 @@ import javafx.scene.Scene;
 
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TabPane.TabClosingPolicy;
-
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import mediator.Mediator;
 
@@ -23,15 +23,17 @@ public class Main_gui extends Application{
 		Pop_win pop_win=new Pop_win();
 		pop_win.new_window();
 		
-		
+		pop_win.get_err_stage().initModality(Modality.WINDOW_MODAL);
+		pop_win.get_err_stage().initOwner(main_stage);
 		
 		
 		TabPane tp=new TabPane();
-		Scene scene = new Scene(tp, 800, 800);
+		
+		Scene scene = new Scene(tp, 750, 800);
 		Tabs tabs=new Tabs();
 		
 	
-		tp.getTabs().addAll(tabs.get_res_tab(),tabs.get_search_tab());
+		tp.getTabs().addAll(tabs.get_res_tab(),tabs.get_search_tab(),tabs.get_edit_tab());
 		
 		Mediator med=new Mediator(tabs,main_stage,pop_win);
 		

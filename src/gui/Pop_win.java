@@ -20,7 +20,7 @@ public class Pop_win{
 		stage=new Stage();
 		stage.setTitle("Error:");
         stage.setScene(new Scene(root, 200, 100));
-        
+       
 	}
 	
 
