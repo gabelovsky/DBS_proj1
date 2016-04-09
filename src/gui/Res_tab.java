@@ -6,7 +6,6 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -196,7 +195,7 @@ public class Res_tab extends Tab {
 		border_p.setTop(top_grid);
 	}
 	void create_mid(BorderPane border_p){
-		ScrollPane mid_scroll= new ScrollPane();
+		//ScrollPane mid_scroll= new ScrollPane();
 		
 		mid_table=new TableView<Object>();
 		mid_table.setEditable(true);
@@ -204,13 +203,14 @@ public class Res_tab extends Tab {
 		
 		mid_table.setPlaceholder(new Label(""));
 		 
-		mid_scroll.setContent(mid_table);
+	/*	mid_scroll.setContent(mid_table);
 		mid_scroll.setPadding(new Insets(10));
 		mid_scroll.setFitToHeight(true);
 		mid_scroll.setFitToWidth(true); ///better solution?
 		
-		mid_scroll.setStyle("-fx-background-color:transparent;");
-		border_p.setCenter(mid_scroll);
+		mid_scroll.setStyle("-fx-background-color:transparent;");*/
+		mid_table.setMaxWidth(500);
+		border_p.setCenter(mid_table);
 		
 	}
 	void create_bot(BorderPane border_p){
