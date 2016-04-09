@@ -7,9 +7,12 @@ public class Main_control {
 	
 	
 	public Main_control(Mediator med){
+		Conn_control conn=new Conn_control(med);
+		conn.set_conn();
 		Res_control res=new Res_control(med);
 		res.set_search();
 		res.set_confirm();
+		res.set_service_boxes();
 		res.set_total_thread();
 		Search_control sea=new Search_control(med);
 		sea.set_room();
@@ -17,9 +20,11 @@ public class Main_control {
 		sea.set_reservation();
 		sea.set_remove();
 		sea.set_edit();
+		sea.set_show();
 		Edit_control edi=new Edit_control(med);
 		edi.set_confirm();
 		edi.set_cancel();
+		edi.set_show();
 	}
 	
 	

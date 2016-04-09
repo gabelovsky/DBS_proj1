@@ -29,9 +29,12 @@ public class Edit_tab extends Tab{
 	NumberTextField pay_id_field;
 	NumberTextField card_field;
 	
+	ComboBoxC serv_box;
+	ComboBoxC rserv_box;
+	
 	Button confirm_but;
 	Button cancel_but;
-	
+	Button show_serv_but;
 	
 	public TextField get_room_field(){
 		return room_field;
@@ -60,6 +63,9 @@ public class Edit_tab extends Tab{
 	public Button get_cancel_but(){
 		return cancel_but;
 	}
+	public Button get_show_but(){
+		return show_serv_but;
+	}
 	public TextField get_res_name(){
 		return  res_name_field;
 	}
@@ -79,8 +85,12 @@ public class Edit_tab extends Tab{
 		return card_field;
 	}
 	
-	
-	
+	public ComboBoxC get_serv_box(){
+		return serv_box;
+	}
+	public ComboBoxC get_rserv_box(){
+		return rserv_box;
+	}
 	Edit_tab(){
 		setText("Edit");
 		setDisable(true);
@@ -121,6 +131,12 @@ public class Edit_tab extends Tab{
 		Label card_label=new Label("Card number:");
 		card_field=new NumberTextField();
 		
+		Label serv_label=new Label("Add service:");
+		serv_box=new ComboBoxC("-","Golf","Beauty pack small","Beauty pack large","Sauna");
+		Label rserv_label=new Label("Remove service:");
+		rserv_box=new ComboBoxC("-","Golf","Beauty pack small","Beauty pack large","Sauna");
+		
+		show_serv_but=new Button("Current services");
 		confirm_but=new Button("Confirm edit");
 		cancel_but=new Button("Cancel");
 		
@@ -154,12 +170,19 @@ public class Edit_tab extends Tab{
 		
 		grid.add(confirm_but, 6,6,2,3 );
 		grid.add(cancel_but, 6, 9,2,3);
+		grid.add(show_serv_but, 6, 12,2,3);
+		
+		grid.add(serv_label, 1, 12);
+		grid.add(serv_box, 1, 13,3,1);
+		grid.add(rserv_label, 1, 14);
+		grid.add(rserv_box, 1, 15,3,1);
+		
 		room_field.setMaxWidth(50);
 		from_d_field.setMaxWidth(50);
 		to_d_field.setMaxWidth(50);
 		
 		
-		
+	
 		res_name_field.setMaxWidth(100);
 		pay_name_field.setMaxWidth(100);
 		res_id_field.setMaxWidth(100);
@@ -167,6 +190,7 @@ public class Edit_tab extends Tab{
 		card_field.setMaxWidth(100);
 		confirm_but.setPrefSize(120, 65);
 		cancel_but.setPrefSize(120, 65);
+		show_serv_but.setPrefSize(120, 65);
 		grid.setVgap(10);
 		grid.setHgap(10);
 		grid.setPadding(new Insets(50));

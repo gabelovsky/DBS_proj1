@@ -17,6 +17,9 @@ import mediator.Mediator;
 
 public class Res_control {
 	Mediator med;
+	String ser1_str="";
+	String ser2_str="";
+	String ser3_str="";
 	
 	Res_control(Mediator med){
 		this.med=med;
@@ -28,8 +31,7 @@ public class Res_control {
 			@Override
 		    public void handle(ActionEvent e) {
 		    	try {
-		    		
-		    		
+		    	
 		    		
 					Connection conn=DriverManager.getConnection(med.get_database(), med.get_user(), med.get_password());
 					Statement st=conn.createStatement();
@@ -49,28 +51,28 @@ public class Res_control {
 					
 					
 					if(med.get_res_tab().get_from_d().getText().equals("")){
-			    		((Label)med.get_pop_win().get_err_stage().getScene().getRoot()).setText("From date empty");
-			    		med.get_pop_win().get_err_stage().show();
+			    		((Label)med.get_pop_win().getScene().getRoot()).setText("From date empty");
+			    		med.get_pop_win().show();
 			    		return;
 			    	}		
 
 					if(med.get_res_tab().get_to_d().getText().equals("")){
-			    		((Label)med.get_pop_win().get_err_stage().getScene().getRoot()).setText("To date empty");
-			    		med.get_pop_win().get_err_stage().show();
+			    		((Label)med.get_pop_win().getScene().getRoot()).setText("To date empty");
+			    		med.get_pop_win().show();
 			    		return;
 			    	}		
 					if(Integer.parseInt(med.get_res_tab().get_from_d().getText())>31||Integer.parseInt(med.get_res_tab().get_from_d().getText())==0)	
 			    	{
-			    		((Label)med.get_pop_win().get_err_stage().getScene().getRoot()).setText("Wrong date set");
+			    		((Label)med.get_pop_win().getScene().getRoot()).setText("Wrong date set");
 			    		med.get_res_tab().get_mid_display().getColumns().clear();					
-			    		med.get_pop_win().get_err_stage().show();
+			    		med.get_pop_win().show();
 			    		return;
 			    	}
 					if(Integer.parseInt(med.get_res_tab().get_to_d().getText())>31||Integer.parseInt(med.get_res_tab().get_to_d().getText())==0)	
 			    	{
-			    		((Label)med.get_pop_win().get_err_stage().getScene().getRoot()).setText("Wrong date set");
+			    		((Label)med.get_pop_win().getScene().getRoot()).setText("Wrong date set");
 			    		med.get_res_tab().get_mid_display().getColumns().clear();
-			    		med.get_pop_win().get_err_stage().show();
+			    		med.get_pop_win().show();
 			    		return;
 			    	}
 					
@@ -79,9 +81,9 @@ public class Res_control {
 					int days = get_days();
 				
 					if (days<=0){
-						((Label)med.get_pop_win().get_err_stage().getScene().getRoot()).setText("Wrong date set");
+						((Label)med.get_pop_win().getScene().getRoot()).setText("Wrong date set");
 						med.get_res_tab().get_mid_display().getColumns().clear();
-			    		med.get_pop_win().get_err_stage().show();
+			    		med.get_pop_win().show();
 			    		return;
 					}
 					
@@ -135,7 +137,9 @@ public class Res_control {
 					conn.close();
 					
 				} catch (SQLException e1) {	
-					e1.printStackTrace();}}});
+					((Label)med.get_pop_win().getScene().getRoot()).setText("Database error at search");
+		    		med.get_pop_win().show();
+		    		return;}}});
 	}
 	
 	void set_confirm(){
@@ -147,33 +151,33 @@ public class Res_control {
 		    	
 		    	
 		    	if(med.get_res_tab().get_mid_display().getSelectionModel().isEmpty()){
-		    		((Label)med.get_pop_win().get_err_stage().getScene().getRoot()).setText("No room selected");
-		    		med.get_pop_win().get_err_stage().show();
+		    		((Label)med.get_pop_win().getScene().getRoot()).setText("No room selected");
+		    		med.get_pop_win().show();
 		    		return;
 		    	}		    	
 		    	if(med.get_res_tab().get_res_name().getText().equals("")){
-		    		((Label)med.get_pop_win().get_err_stage().getScene().getRoot()).setText("Reservation name missing");
-		    		med.get_pop_win().get_err_stage().show();
+		    		((Label)med.get_pop_win().getScene().getRoot()).setText("Reservation name missing");
+		    		med.get_pop_win().show();
 		    		return;
 		    	}
 		    	if(med.get_res_tab().get_res_id().getText().equals("")){
-		    		((Label)med.get_pop_win().get_err_stage().getScene().getRoot()).setText("Reservation id missing");
-		    		med.get_pop_win().get_err_stage().show();
+		    		((Label)med.get_pop_win().getScene().getRoot()).setText("Reservation id missing");
+		    		med.get_pop_win().show();
 		    		return;
 		    	}
 		    	if(med.get_res_tab().get_pay_name().getText().equals("")){
-		    		((Label)med.get_pop_win().get_err_stage().getScene().getRoot()).setText("Billing name missing");
-		    		med.get_pop_win().get_err_stage().show();
+		    		((Label)med.get_pop_win().getScene().getRoot()).setText("Billing name missing");
+		    		med.get_pop_win().show();
 		    		return;
 		    	}
 		    	if(med.get_res_tab().get_pay_id().getText().equals("")){
-		    		((Label)med.get_pop_win().get_err_stage().getScene().getRoot()).setText("Billing id missing");
-		    		med.get_pop_win().get_err_stage().show();
+		    		((Label)med.get_pop_win().getScene().getRoot()).setText("Billing id missing");
+		    		med.get_pop_win().show();
 		    		return;
 		    	}
 		    	if(!med.get_res_tab().get_pay_box().getValue().equals("Cash") && med.get_res_tab().get_card_field().getText().equals("")){
-		    		((Label)med.get_pop_win().get_err_stage().getScene().getRoot()).setText("Card number missing");
-		    		med.get_pop_win().get_err_stage().show();
+		    		((Label)med.get_pop_win().getScene().getRoot()).setText("Card number missing");
+		    		med.get_pop_win().show();
 		    		return;
 		    	}
 		    	
@@ -202,6 +206,13 @@ public class Res_control {
 					int days = (int) ((to_date.getTime() - from_date.getTime()) / (1000 * 60 * 60 * 24));
 					int price= days*Integer.parseInt(row.get(4));
 					
+					if(!med.get_res_tab().get_ser1_box().getValue().equals("-")){
+						price=price+get_price_of(med.get_res_tab().get_ser1_box().getValue());}
+					if(!med.get_res_tab().get_ser2_box().getValue().equals("-")){
+						price=price+get_price_of(med.get_res_tab().get_ser2_box().getValue());}
+					if(!med.get_res_tab().get_ser3_box().getValue().equals("-")){
+						price=price+get_price_of(med.get_res_tab().get_ser3_box().getValue());}
+					
 					String cardnum="0";
 					if(!med.get_res_tab().get_pay_box().getValue().equals("Cash"))
 						cardnum=med.get_res_tab().get_card_field().getText();
@@ -229,14 +240,28 @@ public class Res_control {
 					st.executeUpdate("INSERT INTO bookings(from_date,to_date,room,customer,billing) VALUES "
 							+"("+from_str+","+to_str+",(SELECT id FROM rooms WHERE number="+row.get(0)+"),(SELECT id FROM customers WHERE perid="+med.get_res_tab().get_res_id().getText()
 							+" AND name='"+med.get_res_tab().get_res_name().getText()+"'),"+Integer.toString(key)+");"
-							);
+							,Statement.RETURN_GENERATED_KEYS);
+					
+					rs = st.getGeneratedKeys();
+					if ( rs.next() ) {
+						key = rs.getInt(1);
+					}
+					if(!med.get_res_tab().get_ser1_box().getValue().equals("-"))
+						st.executeUpdate("INSERT INTO serlink(booking,service) VALUES ("+key+",(SELECT id FROM services WHERE type='"+med.get_res_tab().get_ser1_box().getValue()+"'))");
+					if(!med.get_res_tab().get_ser2_box().getValue().equals("-"))
+						st.executeUpdate("INSERT INTO serlink(booking,service) VALUES ("+key+",(SELECT id FROM services WHERE type='"+med.get_res_tab().get_ser2_box().getValue()+"'))");
+					if(!med.get_res_tab().get_ser3_box().getValue().equals("-"))
+						st.executeUpdate("INSERT INTO serlink(booking,service) VALUES ("+key+",(SELECT id FROM services WHERE type='"+med.get_res_tab().get_ser3_box().getValue()+"'))");
+					
 					med.get_res_tab().get_mid_display().getItems().remove(med.get_res_tab().get_mid_display().getSelectionModel().getSelectedItem());
 					
 					rs.close();
 					st.close();
 					conn.close();
 				} catch (SQLException e1) {
-					e1.printStackTrace();}}});
+					((Label)med.get_pop_win().getScene().getRoot()).setText("Database error at reservation");
+		    		med.get_pop_win().show();
+		    		return;}}});
 	}
 	
 	void set_total_thread(){
@@ -257,7 +282,10 @@ public class Res_control {
 								int days=get_days();
 								int price= days*Integer.parseInt(row.get(4));
 								
-								med.get_res_tab().get_total_area().setText("Days: "+Integer.toString(days)+"\nPrice total: "+Integer.toString(price)+"€");
+								
+								
+								med.get_res_tab().get_total_area().setText("Days: "+Integer.toString(days)+"\nPrice total: "+Integer.toString(price)+ser1_str
+										+ser2_str+ser3_str+"€");
 							}else{
 								med.get_res_tab().get_total_area().setText("No room selected\n or bad date");
 							}
@@ -284,6 +312,30 @@ public class Res_control {
 		
 	}
 	
+	void set_service_boxes(){
+		med.get_res_tab().get_ser1_box().setOnAction((event) -> {
+		   if(med.get_res_tab().get_ser1_box().getValue().equals("-"))
+			   ser1_str="";
+		   else 
+			   ser1_str="\n+"+get_price_of(med.get_res_tab().get_ser1_box().getValue());
+			   
+		});
+		med.get_res_tab().get_ser2_box().setOnAction((event) -> {
+			   if(med.get_res_tab().get_ser2_box().getValue().equals("-"))
+				   ser2_str="";
+			   else 
+				   ser2_str="+"+get_price_of(med.get_res_tab().get_ser2_box().getValue());
+				   
+			});
+		med.get_res_tab().get_ser3_box().setOnAction((event) -> {
+			   if(med.get_res_tab().get_ser2_box().getValue().equals("-"))
+				   ser3_str="";
+			   else 
+				   ser3_str="+"+get_price_of(med.get_res_tab().get_ser3_box().getValue());
+				   
+			});
+	}
+	
 	int get_days(){
 		Calendar cal = Calendar.getInstance();
 		cal.set(Integer.parseInt(med.get_res_tab().get_from_y().getValue()),
@@ -297,6 +349,31 @@ public class Res_control {
 		
 		
 		return (int) ((to_date.getTime() - from_date.getTime()) / (1000 * 60 * 60 * 24));
+	}
+	
+	int get_price_of(String type){
+		
+		int price=0;
+		try {
+			Connection conn=DriverManager.getConnection(med.get_database(), med.get_user(), med.get_password());
+			Statement st=conn.createStatement();
+			ResultSet rs=st.executeQuery("SELECT price FROM services WHERE type='"+type+"'");
+			rs.next();
+			
+			price=rs.getInt(1);
+			rs.close();
+			st.close();
+			conn.close();
+			
+			
+			
+		} catch (SQLException e) {
+			((Label)med.get_pop_win().getScene().getRoot()).setText("Database error at service search");
+    		med.get_pop_win().show();
+    		
+		}
+		return price;
+		
 	}
 	
 }

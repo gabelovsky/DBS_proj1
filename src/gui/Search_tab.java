@@ -18,6 +18,7 @@ public class Search_tab extends Tab{
 	Button res_but;
 	Button rem_but;
 	Button edit_but;
+	Button show_serv_but;
 	NumberTextField room_field;
 	TextField name_field;
 	NumberTextField id_field;
@@ -38,6 +39,10 @@ public class Search_tab extends Tab{
 	}
 	public Button get_edit_but(){
 		return edit_but;
+	}
+	public Button get_show_but(){
+		return show_serv_but;
+				
 	}
 	public TextField get_room_field(){
 		return room_field;
@@ -68,6 +73,7 @@ public class Search_tab extends Tab{
 		GridPane grid_p=new GridPane();
 		rem_but=new Button("Delete res.");
 		edit_but=new Button("Edit res.");
+		show_serv_but=new Button("Show services");
 		HBox hor_b=new HBox();
 		
 		
@@ -84,7 +90,8 @@ public class Search_tab extends Tab{
 		room_but.setPrefSize(120, 65);
 		per_but.setPrefSize(120, 65);
 		res_but.setPrefSize(120, 65);
-		//grid_p.setGridLinesVisible(true);
+		show_serv_but.setPrefSize(120, 65);
+		
 		grid_p.add(room_label, 0, 0);
 		grid_p.add(room_field, 0, 1);
 		grid_p.add(name_label, 0, 2);
@@ -106,9 +113,8 @@ public class Search_tab extends Tab{
 		grid_p.setHgap(10);
 		grid_p.setPadding(new Insets(10));
 		table.setPrefHeight(500);
-		table.setEditable(true);
 		table.setPlaceholder(new Label(""));
-		hor_b.getChildren().addAll(rem_but,edit_but);
+		hor_b.getChildren().addAll(rem_but,edit_but,show_serv_but);
 		hor_b.setAlignment(Pos.CENTER);
 		hor_b.setPadding(new Insets(10));
 		hor_b.setSpacing(20);

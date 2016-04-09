@@ -15,6 +15,9 @@ import javafx.scene.layout.GridPane;
 
 public class Res_tab extends Tab {
  
+	ComboBoxC ser1_box;
+	ComboBoxC ser2_box;
+	ComboBoxC ser3_box;
 	
 	Button search_button;
 	NumberTextField room_field;
@@ -116,8 +119,15 @@ public class Res_tab extends Tab {
 	public TextField get_card_field(){
 		return card_field;
 	}
-	
-	
+	public ComboBoxC get_ser1_box(){
+		return ser1_box;
+	}
+	public ComboBoxC get_ser2_box(){
+		return ser2_box;
+	}
+	public ComboBoxC get_ser3_box(){
+		return ser3_box;
+	}
 	
 	void create_top(BorderPane border_p){
 		GridPane top_grid= new GridPane();
@@ -223,11 +233,11 @@ public class Res_tab extends Tab {
 		Label res_id_label=new Label("Identity number:");
 		res_id_field=new NumberTextField();
 		Label ser1_label=new Label("Service 1");
-		ComboBoxC ser1_box=new ComboBoxC("-","Golf","Beauty pack small","Beauty pack large","Massage");
+		ser1_box=new ComboBoxC("-","Golf","Beauty pack small","Beauty pack large","Sauna");
 		Label ser2_label=new Label("Service 2");
-		ComboBoxC ser2_box=new ComboBoxC("-","Golf","Beauty pack small","Beauty pack large","Massage");
+		ser2_box=new ComboBoxC("-","Golf","Beauty pack small","Beauty pack large","Sauna");
 		Label ser3_label=new Label("Service 3");
-		ComboBoxC ser3_box=new ComboBoxC("-","Golf","Beauty pack small","Beauty pack large","Massage");
+		ser3_box=new ComboBoxC("-","Golf","Beauty pack small","Beauty pack large","Sauna");
 		Label total_label=new Label("Total:");
 		total_area=new Label();
 		
