@@ -50,7 +50,7 @@ public class Search_control {
 					}
 			    	
 			    	
-			    	ResultSet rs=st.executeQuery("SELECT r.number,r.floor,r.type,r.alig,r.price,count(r.number) FROM rooms AS r LEFT JOIN bookings AS b ON b.room=r.id "
+			    	ResultSet rs=st.executeQuery("SELECT r.number,r.floor,COALESCE(r.type,'-'),COALESCE(r.alig,'-'),r.price,count(r.number) FROM rooms AS r LEFT JOIN bookings AS b ON b.room=r.id "
 			    	+"WHERE TRUE"+room_str+name_str+id_str
 			    	+" GROUP BY r.number,r.floor,r.type,r.alig,r.price ORDER BY r.number ");
 			    	
@@ -97,8 +97,9 @@ public class Search_control {
 					}
 			    	
 			    	String[] columns={"Name:","Per. id:","Res. count:","Avg. sum:"};
+			    	
 			    	ResultSet rs=st.executeQuery("SELECT c.name,c.perid,COUNT(b.id),COALESCE(ROUND(AVG(bi.sum)),0) FROM customers AS c FULL JOIN bookings AS b ON b.customer=c.id "
-			    			+ "FULL JOIN billings AS bi ON b.billing=bi.id LEFT JOIN rooms AS r ON b.room=r.id WHERE TRUE"+room_str+name_str+id_str+" GROUP BY c.perid,c.name ORDER BY c.name,c.perid");
+			    			+ "LEFT JOIN billings AS bi ON b.billing=bi.id LEFT JOIN rooms AS r ON b.room=r.id WHERE TRUE"+room_str+name_str+id_str+" GROUP BY c.perid,c.name ORDER BY c.name,c.perid");
 
 					    	
 					    	
@@ -187,14 +188,19 @@ public class Search_control {
 					
 				
 					
-					
-					 SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-					 Date parsed =  format.parse(row.get(1));
-				     java.sql.Date from = new java.sql.Date(parsed.getTime());
-				     parsed= format.parse(row.get(2));
-				     java.sql.Date to=new java.sql.Date(parsed.getTime());
+					SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+					Date parsed =  format.parse(row.get(1));
+				    java.sql.Date from = new java.sql.Date(parsed.getTime());
+				    parsed= format.parse(row.get(2));
+				    java.sql.Date to=new java.sql.Date(parsed.getTime());
 				     
-					st.executeUpdate("DELETE FROM bookings WHERE room=(SELECT id FROM rooms WHERE number="+row.get(0)+") AND from_date='"+from+"' AND to_date='"+to+"'");
+
+					ResultSet rs=st.executeQuery("SELECT b.id FROM bookings AS b JOIN rooms AS r ON b.room=r.id WHERE r.number="+row.get(0)+" AND from_date='"+from+"' AND to_date='"+to+"'");
+					rs.next();
+					int bookid=rs.getInt(1);
+					st.executeUpdate("DELETE FROM serlink WHERE booking="+bookid);
+				     
+					st.executeUpdate("DELETE FROM bookings WHERE id="+bookid);
 					med.get_search_tab().get_display().getItems().remove(med.get_search_tab().get_display().getSelectionModel().getSelectedItem());
 			    	st.close();
 					conn.close();	

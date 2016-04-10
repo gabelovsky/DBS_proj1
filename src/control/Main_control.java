@@ -7,6 +7,7 @@ public class Main_control {
 	
 	
 	public Main_control(Mediator med){
+		
 		Conn_control conn=new Conn_control(med);
 		conn.set_conn();
 		Res_control res=new Res_control(med);

@@ -1,0 +1,601 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 9.5.1
+-- Dumped by pg_dump version 9.5.1
+
+-- Started on 2016-04-10 22:32:13
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+SET row_security = off;
+
+DROP DATABASE dbs_proj;
+--
+-- TOC entry 2161 (class 1262 OID 24635)
+-- Name: dbs_proj; Type: DATABASE; Schema: -; Owner: postgres
+--
+
+CREATE DATABASE dbs_proj WITH TEMPLATE = template0 ENCODING = 'UTF8' LC_COLLATE = 'English_United Kingdom.1252' LC_CTYPE = 'English_United Kingdom.1252';
+
+
+ALTER DATABASE dbs_proj OWNER TO postgres;
+
+\connect dbs_proj
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- TOC entry 6 (class 2615 OID 2200)
+-- Name: public; Type: SCHEMA; Schema: -; Owner: postgres
+--
+
+CREATE SCHEMA public;
+
+
+ALTER SCHEMA public OWNER TO postgres;
+
+--
+-- TOC entry 2162 (class 0 OID 0)
+-- Dependencies: 6
+-- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: postgres
+--
+
+COMMENT ON SCHEMA public IS 'standard public schema';
+
+
+--
+-- TOC entry 1 (class 3079 OID 12355)
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- TOC entry 2164 (class 0 OID 0)
+-- Dependencies: 1
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
+SET search_path = public, pg_catalog;
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- TOC entry 186 (class 1259 OID 24930)
+-- Name: billings; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE billings (
+    id integer NOT NULL,
+    name character varying(50) NOT NULL,
+    perid integer NOT NULL,
+    type character varying(15),
+    cardid integer,
+    sum integer NOT NULL,
+    paid boolean DEFAULT false NOT NULL
+);
+
+
+ALTER TABLE billings OWNER TO postgres;
+
+--
+-- TOC entry 185 (class 1259 OID 24928)
+-- Name: billings_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE billings_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE billings_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 2165 (class 0 OID 0)
+-- Dependencies: 185
+-- Name: billings_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE billings_id_seq OWNED BY billings.id;
+
+
+--
+-- TOC entry 188 (class 1259 OID 24939)
+-- Name: bookings; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE bookings (
+    id integer NOT NULL,
+    from_date date NOT NULL,
+    to_date date NOT NULL,
+    room integer NOT NULL,
+    customer integer NOT NULL,
+    billing integer NOT NULL
+);
+
+
+ALTER TABLE bookings OWNER TO postgres;
+
+--
+-- TOC entry 187 (class 1259 OID 24937)
+-- Name: bookings_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE bookings_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE bookings_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 2166 (class 0 OID 0)
+-- Dependencies: 187
+-- Name: bookings_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE bookings_id_seq OWNED BY bookings.id;
+
+
+--
+-- TOC entry 184 (class 1259 OID 24922)
+-- Name: customers; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE customers (
+    id integer NOT NULL,
+    name character varying(50) NOT NULL,
+    perid integer NOT NULL
+);
+
+
+ALTER TABLE customers OWNER TO postgres;
+
+--
+-- TOC entry 183 (class 1259 OID 24920)
+-- Name: customers_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE customers_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE customers_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 2167 (class 0 OID 0)
+-- Dependencies: 183
+-- Name: customers_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE customers_id_seq OWNED BY customers.id;
+
+
+--
+-- TOC entry 182 (class 1259 OID 24912)
+-- Name: rooms; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE rooms (
+    id integer NOT NULL,
+    number integer NOT NULL,
+    floor integer NOT NULL,
+    type character varying(15),
+    alig character varying(15),
+    price integer NOT NULL
+);
+
+
+ALTER TABLE rooms OWNER TO postgres;
+
+--
+-- TOC entry 181 (class 1259 OID 24910)
+-- Name: rooms_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE rooms_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE rooms_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 2168 (class 0 OID 0)
+-- Dependencies: 181
+-- Name: rooms_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE rooms_id_seq OWNED BY rooms.id;
+
+
+--
+-- TOC entry 191 (class 1259 OID 32836)
+-- Name: serlink; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE serlink (
+    booking integer NOT NULL,
+    service integer NOT NULL
+);
+
+
+ALTER TABLE serlink OWNER TO postgres;
+
+--
+-- TOC entry 190 (class 1259 OID 32830)
+-- Name: services; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE services (
+    id integer NOT NULL,
+    type character varying(30) NOT NULL,
+    price integer NOT NULL
+);
+
+
+ALTER TABLE services OWNER TO postgres;
+
+--
+-- TOC entry 189 (class 1259 OID 32828)
+-- Name: services_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE services_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE services_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 2169 (class 0 OID 0)
+-- Dependencies: 189
+-- Name: services_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE services_id_seq OWNED BY services.id;
+
+
+--
+-- TOC entry 2011 (class 2604 OID 24933)
+-- Name: id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY billings ALTER COLUMN id SET DEFAULT nextval('billings_id_seq'::regclass);
+
+
+--
+-- TOC entry 2013 (class 2604 OID 24942)
+-- Name: id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY bookings ALTER COLUMN id SET DEFAULT nextval('bookings_id_seq'::regclass);
+
+
+--
+-- TOC entry 2010 (class 2604 OID 24925)
+-- Name: id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY customers ALTER COLUMN id SET DEFAULT nextval('customers_id_seq'::regclass);
+
+
+--
+-- TOC entry 2009 (class 2604 OID 24915)
+-- Name: id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY rooms ALTER COLUMN id SET DEFAULT nextval('rooms_id_seq'::regclass);
+
+
+--
+-- TOC entry 2014 (class 2604 OID 32833)
+-- Name: id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY services ALTER COLUMN id SET DEFAULT nextval('services_id_seq'::regclass);
+
+
+--
+-- TOC entry 2151 (class 0 OID 24930)
+-- Dependencies: 186
+-- Data for Name: billings; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+INSERT INTO billings (id, name, perid, type, cardid, sum, paid) VALUES (37, 'Asd', 11111, 'Cash', 0, 30, false);
+INSERT INTO billings (id, name, perid, type, cardid, sum, paid) VALUES (36, 'Pe', 7, 'Cash', 0, 1674, false);
+INSERT INTO billings (id, name, perid, type, cardid, sum, paid) VALUES (5, 'Pete', 8541, 'Cash', 0, 648, false);
+INSERT INTO billings (id, name, perid, type, cardid, sum, paid) VALUES (16, 'A', 9521, 'Cash', 0, 350, false);
+INSERT INTO billings (id, name, perid, type, cardid, sum, paid) VALUES (39, 'serv', 1122, 'Cash', 0, 225, false);
+INSERT INTO billings (id, name, perid, type, cardid, sum, paid) VALUES (38, 'servicee', 4456, 'Cash', 0, 180, false);
+INSERT INTO billings (id, name, perid, type, cardid, sum, paid) VALUES (17, 'Karol', 12377, 'Prepaid card', 987543, 630, false);
+INSERT INTO billings (id, name, perid, type, cardid, sum, paid) VALUES (2, 'test123', 123, 'Card', 0, 960, false);
+INSERT INTO billings (id, name, perid, type, cardid, sum, paid) VALUES (1, 'xoxo', 19, 'Cash', 0, 150, false);
+INSERT INTO billings (id, name, perid, type, cardid, sum, paid) VALUES (27, 'P', 7, 'Cash', 0, 150, false);
+INSERT INTO billings (id, name, perid, type, cardid, sum, paid) VALUES (15, 'Ps', 897, 'Cash', 0, 30, false);
+INSERT INTO billings (id, name, perid, type, cardid, sum, paid) VALUES (3, 'Peter', 12345, 'Cash', 0, 70, false);
+
+
+--
+-- TOC entry 2170 (class 0 OID 0)
+-- Dependencies: 185
+-- Name: billings_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('billings_id_seq', 39, true);
+
+
+--
+-- TOC entry 2153 (class 0 OID 24939)
+-- Dependencies: 188
+-- Data for Name: bookings; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+INSERT INTO bookings (id, from_date, to_date, room, customer, billing) VALUES (36, '2016-04-09', '2016-04-10', 4, 23, 37);
+INSERT INTO bookings (id, from_date, to_date, room, customer, billing) VALUES (35, '2016-08-08', '2016-09-09', 1, 8, 36);
+INSERT INTO bookings (id, from_date, to_date, room, customer, billing) VALUES (5, '2016-04-08', '2016-04-20', 1, 9, 5);
+INSERT INTO bookings (id, from_date, to_date, room, customer, billing) VALUES (15, '2016-04-15', '2016-04-20', 3, 11, 16);
+INSERT INTO bookings (id, from_date, to_date, room, customer, billing) VALUES (16, '2016-12-01', '2016-12-08', 2, 13, 17);
+INSERT INTO bookings (id, from_date, to_date, room, customer, billing) VALUES (2, '2016-04-04', '2016-04-10', 6, 4, 2);
+INSERT INTO bookings (id, from_date, to_date, room, customer, billing) VALUES (1, '2016-04-04', '2016-04-05', 5, 2, 1);
+INSERT INTO bookings (id, from_date, to_date, room, customer, billing) VALUES (26, '2016-04-08', '2016-04-09', 5, 8, 27);
+INSERT INTO bookings (id, from_date, to_date, room, customer, billing) VALUES (14, '2016-04-06', '2016-04-07', 4, 10, 15);
+INSERT INTO bookings (id, from_date, to_date, room, customer, billing) VALUES (3, '2016-04-06', '2016-04-07', 3, 4, 3);
+INSERT INTO bookings (id, from_date, to_date, room, customer, billing) VALUES (38, '2016-04-09', '2016-04-10', 3, 25, 39);
+
+
+--
+-- TOC entry 2171 (class 0 OID 0)
+-- Dependencies: 187
+-- Name: bookings_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('bookings_id_seq', 38, true);
+
+
+--
+-- TOC entry 2149 (class 0 OID 24922)
+-- Dependencies: 184
+-- Data for Name: customers; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+INSERT INTO customers (id, name, perid) VALUES (1, 'asd', 15);
+INSERT INTO customers (id, name, perid) VALUES (2, 'nieco', 19);
+INSERT INTO customers (id, name, perid) VALUES (3, 'as', 94);
+INSERT INTO customers (id, name, perid) VALUES (4, 'test123', 123);
+INSERT INTO customers (id, name, perid) VALUES (5, 'Peter', 897984);
+INSERT INTO customers (id, name, perid) VALUES (6, 'Peterson', 8979841);
+INSERT INTO customers (id, name, perid) VALUES (7, 'asd', 421435);
+INSERT INTO customers (id, name, perid) VALUES (9, 'Pet', 787);
+INSERT INTO customers (id, name, perid) VALUES (10, 'Ps', 897);
+INSERT INTO customers (id, name, perid) VALUES (11, 'A', 9521);
+INSERT INTO customers (id, name, perid) VALUES (12, 'Karel', 98752);
+INSERT INTO customers (id, name, perid) VALUES (13, 'Karol', 12377);
+INSERT INTO customers (id, name, perid) VALUES (14, 'delee', 111);
+INSERT INTO customers (id, name, perid) VALUES (15, 'Datetest', 222);
+INSERT INTO customers (id, name, perid) VALUES (8, 'Pe', 7);
+INSERT INTO customers (id, name, perid) VALUES (23, 'Asd', 11111);
+INSERT INTO customers (id, name, perid) VALUES (24, 'Noone', 4455);
+INSERT INTO customers (id, name, perid) VALUES (25, 'serv', 1122);
+
+
+--
+-- TOC entry 2172 (class 0 OID 0)
+-- Dependencies: 183
+-- Name: customers_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('customers_id_seq', 25, true);
+
+
+--
+-- TOC entry 2147 (class 0 OID 24912)
+-- Dependencies: 182
+-- Data for Name: rooms; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+INSERT INTO rooms (id, number, floor, type, alig, price) VALUES (1, 1, 0, 'Cheap', 'North', 54);
+INSERT INTO rooms (id, number, floor, type, alig, price) VALUES (2, 2, 2, 'Luxury', 'North', 90);
+INSERT INTO rooms (id, number, floor, type, alig, price) VALUES (3, 10, 1, '2 man', 'North', 70);
+INSERT INTO rooms (id, number, floor, type, alig, price) VALUES (4, 9, 0, 'Cheap', 'South-E', 30);
+INSERT INTO rooms (id, number, floor, type, alig, price) VALUES (5, 7, 2, 'Luxury', 'South', 150);
+INSERT INTO rooms (id, number, floor, type, alig, price) VALUES (6, 3, 1, 'Luxury', 'North', 160);
+INSERT INTO rooms (id, number, floor, type, alig, price) VALUES (7, 4, 0, 'Cheap', 'South-E', 45);
+INSERT INTO rooms (id, number, floor, type, alig, price) VALUES (11, 5, 0, NULL, NULL, 35);
+
+
+--
+-- TOC entry 2173 (class 0 OID 0)
+-- Dependencies: 181
+-- Name: rooms_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('rooms_id_seq', 11, true);
+
+
+--
+-- TOC entry 2156 (class 0 OID 32836)
+-- Dependencies: 191
+-- Data for Name: serlink; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+INSERT INTO serlink (booking, service) VALUES (38, 1);
+INSERT INTO serlink (booking, service) VALUES (38, 4);
+INSERT INTO serlink (booking, service) VALUES (35, 1);
+INSERT INTO serlink (booking, service) VALUES (38, 1);
+INSERT INTO serlink (booking, service) VALUES (38, 2);
+
+
+--
+-- TOC entry 2155 (class 0 OID 32830)
+-- Dependencies: 190
+-- Data for Name: services; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+INSERT INTO services (id, type, price) VALUES (1, 'Golf', 50);
+INSERT INTO services (id, type, price) VALUES (2, 'Beauty pack small', 40);
+INSERT INTO services (id, type, price) VALUES (3, 'Beauty pack large', 60);
+INSERT INTO services (id, type, price) VALUES (4, 'Sauna', 15);
+
+
+--
+-- TOC entry 2174 (class 0 OID 0)
+-- Dependencies: 189
+-- Name: services_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('services_id_seq', 4, true);
+
+
+--
+-- TOC entry 2022 (class 2606 OID 24936)
+-- Name: billings_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY billings
+    ADD CONSTRAINT billings_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2024 (class 2606 OID 24944)
+-- Name: bookings_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY bookings
+    ADD CONSTRAINT bookings_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2020 (class 2606 OID 24927)
+-- Name: customers_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY customers
+    ADD CONSTRAINT customers_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2016 (class 2606 OID 24919)
+-- Name: rooms_number_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY rooms
+    ADD CONSTRAINT rooms_number_key UNIQUE (number);
+
+
+--
+-- TOC entry 2018 (class 2606 OID 24917)
+-- Name: rooms_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY rooms
+    ADD CONSTRAINT rooms_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2026 (class 2606 OID 32835)
+-- Name: services_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY services
+    ADD CONSTRAINT services_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2029 (class 2606 OID 24955)
+-- Name: bookings_billing_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY bookings
+    ADD CONSTRAINT bookings_billing_fkey FOREIGN KEY (billing) REFERENCES billings(id);
+
+
+--
+-- TOC entry 2028 (class 2606 OID 24950)
+-- Name: bookings_customer_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY bookings
+    ADD CONSTRAINT bookings_customer_fkey FOREIGN KEY (customer) REFERENCES customers(id);
+
+
+--
+-- TOC entry 2027 (class 2606 OID 24945)
+-- Name: bookings_room_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY bookings
+    ADD CONSTRAINT bookings_room_fkey FOREIGN KEY (room) REFERENCES rooms(id);
+
+
+--
+-- TOC entry 2030 (class 2606 OID 32839)
+-- Name: serlink_booking_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY serlink
+    ADD CONSTRAINT serlink_booking_fkey FOREIGN KEY (booking) REFERENCES bookings(id);
+
+
+--
+-- TOC entry 2031 (class 2606 OID 32844)
+-- Name: serlink_service_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY serlink
+    ADD CONSTRAINT serlink_service_fkey FOREIGN KEY (service) REFERENCES services(id);
+
+
+--
+-- TOC entry 2163 (class 0 OID 0)
+-- Dependencies: 6
+-- Name: public; Type: ACL; Schema: -; Owner: postgres
+--
+
+REVOKE ALL ON SCHEMA public FROM PUBLIC;
+REVOKE ALL ON SCHEMA public FROM postgres;
+GRANT ALL ON SCHEMA public TO postgres;
+GRANT ALL ON SCHEMA public TO PUBLIC;
+
+
+-- Completed on 2016-04-10 22:32:13
+
+--
+-- PostgreSQL database dump complete
+--
+

@@ -124,7 +124,7 @@ public class Res_control {
 					}
 					
 					
-					ResultSet rs=st.executeQuery("SELECT DISTINCT r.number,r.floor,r.type,r.alig,r.price FROM rooms AS r LEFT JOIN bookings AS b ON b.room=r.id WHERE TRUE"
+					ResultSet rs=st.executeQuery("SELECT DISTINCT r.number,r.floor,COALESCE(r.type,'-'),COALESCE(r.alig,'-'),r.price FROM rooms AS r LEFT JOIN bookings AS b ON b.room=r.id WHERE TRUE"
 					+num_str+floor_str+type_str+ali_str+price_str+date_str+" ORDER BY r.number;");
 					
 					
