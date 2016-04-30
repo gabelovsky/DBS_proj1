@@ -157,9 +157,21 @@ public class Res_tab extends Tab {
 		Label to_label=new Label("To:");
 		to_y_box=new ComboBoxC("2016","2017","2018");
 		to_m_box=new ComboBoxC("1","2","3","4","5","6","7","8","9","10","11","12");
+		
 		to_d_field=new NumberTextField(String.valueOf(Calendar.getInstance().get(Calendar.DAY_OF_MONTH)+1));
 		to_m_box.getSelectionModel().select(String.valueOf(Calendar.getInstance().get(Calendar.MONTH)+1));
 		to_y_box.getSelectionModel().select(String.valueOf(Calendar.getInstance().get(Calendar.YEAR)));
+		
+		
+		if(Integer.parseInt(to_d_field.getText())>Calendar.getInstance().getActualMaximum(Calendar.DAY_OF_MONTH)){
+			to_d_field.setText("1");
+			to_m_box.getSelectionModel().select(to_m_box.getSelectionModel().getSelectedIndex()+1);
+		}
+		
+		if(to_m_box.getSelectionModel().getSelectedIndex()==0&& from_m_box.getSelectionModel().getSelectedIndex()==11){
+			to_y_box.getSelectionModel().select(to_y_box.getSelectionModel().getSelectedIndex()+1);
+		}
+		
 		
 		
 		top_grid.add(room_label, 0, 0);

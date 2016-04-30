@@ -5,8 +5,13 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -14,24 +19,43 @@ import javafx.event.EventHandler;
 import javafx.scene.control.Label;
 import javafx.stage.WindowEvent;
 import mediator.Mediator;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPoolConfig;
+import redis.clients.jedis.exceptions.JedisException;
 
 public class Res_control {
 	Mediator med;
 	String ser1_str="";
 	String ser2_str="";
 	String ser3_str="";
+	Thread jed_th;
+	boolean running=false;
 	
 	Res_control(Mediator med){
 		this.med=med;
 	}
 	
 	void set_search(){
+		
+		
 		med.get_res_tab().get_search_button().setOnAction(new EventHandler<ActionEvent>() { 
 		   
 			@Override
 		    public void handle(ActionEvent e) {
 		    	try {
+		    		
+		    		if(!jed_th.isAlive())
+		    			jed_th.start();
+		    		running=false;
+		    		
+		    		
+		    		
+		    		
+		    	  
 		    	
+		    	
+		    		
 		    		
 					Connection conn=DriverManager.getConnection(med.get_database(), med.get_user(), med.get_password());
 					Statement st=conn.createStatement();
@@ -89,7 +113,7 @@ public class Res_control {
 					
 					from_str="'"+med.get_res_tab().get_from_y().getValue()+"-"+med.get_res_tab().get_from_m().getValue()+"-"+med.get_res_tab().get_from_d().getText()+"'";
 					to_str="'"+med.get_res_tab().get_to_y().getValue()+"-"+med.get_res_tab().get_to_m().getValue()+"-"+med.get_res_tab().get_to_d().getText()+"'";
-					date_str=" AND(r.id NOT IN (SELECT room from bookings as bo where("+from_str+" BETWEEN bo.from_date AND bo.to_date) OR ("+to_str
+					date_str=" AND(r.id NOT IN (SELECT room FROM bookings AS bo WHERE("+from_str+" BETWEEN bo.from_date AND bo.to_date) OR ("+to_str
 					+"BETWEEN bo.from_date AND bo.to_date) OR ("+from_str+"<=bo.from_date AND"+to_str+">=bo.to_date)))"; 
 					
 					if(!med.get_res_tab().get_room_field().getText().equals("")){
@@ -122,24 +146,90 @@ public class Res_control {
 								break;	
 						}	
 					}
+					Jedis jed=new Jedis("localhost");
+					Set<String> clientz=jed.smembers("cs");
+					
+					
+					if(med.get_res_tab().get_mid_display().getSelectionModel().getSelectedItem()!=null){
+						jed.del(med.get_client_num());
+						jed.del(med.get_client_num()+"h");
+					}
+					
+					
+					Calendar cal = Calendar.getInstance();
+					cal.set(Integer.parseInt(med.get_res_tab().get_from_y().getValue()),
+							Integer.parseInt(med.get_res_tab().get_from_m().getValue())-1,
+							Integer.parseInt(med.get_res_tab().get_from_d().getText()));
+					Date from_date = cal.getTime();
+					cal.set(Integer.parseInt(med.get_res_tab().get_to_y().getValue()),
+							Integer.parseInt(med.get_res_tab().get_to_m().getValue())-1,
+							Integer.parseInt(med.get_res_tab().get_to_d().getText()));
+					Date to_date = cal.getTime();
+					
+					SimpleDateFormat format = new SimpleDateFormat("''yyyy-MM-dd''");
+					Date from_new=null;
+					Date to_new=null;
+					
+					String locked_str="";
+					
+					
+					for(String s:clientz){
+						if(jed.get(s)!=null){
+							
+							try {
+								to_new=format.parse(jed.hget(s+"h", "to"));
+								from_new=format.parse(jed.hget(s+"h", "from"));
+							} catch (ParseException e1) {
+								e1.printStackTrace();
+							}
+							
+							
+							
+							
+							
+							
+							
+							if((from_date.after(from_new)&&from_date.before(to_new))
+								||(to_date.after(from_new)&&to_date.before(to_new))
+								||(from_date.before(from_new)&&to_date.after(to_new))||
+								from_date.equals(from_new)||from_date.equals(to_new)||
+								to_date.equals(from_new)||from_date.equals(to_new)
+							){
+								locked_str=locked_str+" AND r.number!="+jed.hget(s+"h", "room");
+								
+							}
+						}
+					}
 					
 					
 					ResultSet rs=st.executeQuery("SELECT DISTINCT r.number,r.floor,COALESCE(r.type,'-'),COALESCE(r.alig,'-'),r.price FROM rooms AS r LEFT JOIN bookings AS b ON b.room=r.id WHERE TRUE"
-					+num_str+floor_str+type_str+ali_str+price_str+date_str+" ORDER BY r.number;");
+					+num_str+floor_str+type_str+ali_str+price_str+date_str+locked_str+" ORDER BY r.number;");
 					
 					
-				
+					
 					Table_fill.set_table(rs,columns, med.get_res_tab().get_mid_display());
 					
-			        
+
+		    		
+					
+					running=true;
+			        jed.close();
 					rs.close();
 					st.close();
 					conn.close();
 					
 				} catch (SQLException e1) {	
+					e1.printStackTrace();
 					((Label)med.get_pop_win().getScene().getRoot()).setText("Database error at search");
 		    		med.get_pop_win().show();
-		    		return;}}});
+		    		return;}
+		    	catch(JedisException e2){
+		    		((Label)med.get_pop_win().getScene().getRoot()).setText("Redis error at search");
+		    		med.get_pop_win().show();
+		    		return;
+		    	}
+		    	}});
+		    	
 	}
 	
 	void set_confirm(){
@@ -255,6 +345,12 @@ public class Res_control {
 					
 					med.get_res_tab().get_mid_display().getItems().remove(med.get_res_tab().get_mid_display().getSelectionModel().getSelectedItem());
 					
+					
+					med.get_pop_win().setTitle("Res conf");
+					((Label)med.get_pop_win().getScene().getRoot()).setText("Successful reservation");					
+		    		med.get_pop_win().show();
+		    		
+					
 					rs.close();
 					st.close();
 					conn.close();
@@ -262,13 +358,18 @@ public class Res_control {
 					((Label)med.get_pop_win().getScene().getRoot()).setText("Database error at reservation");
 		    		med.get_pop_win().show();
 		    		return;}}});
+		
+		
 	}
 	
 	void set_total_thread(){
 		Thread th=new Thread(new Runnable() {
             @Override
             public void run() {
+            	
+            	
                 while(true){
+                	
                 	Platform.runLater(new Runnable(){
 						@SuppressWarnings("unchecked")
 						@Override
@@ -289,11 +390,100 @@ public class Res_control {
 							}else{
 								med.get_res_tab().get_total_area().setText("No room selected\n or bad date");
 							}
+					}
+                		
+                	});
+                	try{Thread.sleep(100);}
+                	
+                	catch (InterruptedException ex) {
+                		
+        				break;
+        			}
+                } 
+            }
+        });
+		
+		
+		med.get_main_stage().setOnCloseRequest(new EventHandler<WindowEvent>() {
+		    @Override public void handle(WindowEvent t) {
+		    	jed_th.interrupt();
+		        th.interrupt();
+		        
+		        Jedis jed=new Jedis("localhost");
+		        
+		        jed.del(med.get_client_num()+"c");
+		        jed.srem("cs", med.get_client_num());
+		        
+		        jed.del(med.get_client_num()+"h");
+		        jed.del(med.get_client_num());
+		        jed.close(); 
+		        
+		    }
+		});
+		th.start();
+		
+	}
+	
+	void set_jedis_thread(){
+		
+		jed_th=new Thread(new Runnable() {
+			
+            @Override
+            public void run() {
+            	
+                JedisPoolConfig pool_con=new JedisPoolConfig();
+            	pool_con.setMaxTotal(64);
+            	pool_con.setTestOnBorrow(true);
+            	pool_con.setTestOnReturn(true);
+            	pool_con.setTestOnReturn(true);
+            	JedisPool pool = new JedisPool(pool_con,"localhost");
+            	
+                while(running){
+                   
+                	Platform.runLater(new Runnable(){
+						@SuppressWarnings("unchecked")
+						@Override
+						public void run() {
+							
+							if(jed_th.isInterrupted()){
+								pool.close();
+								return;
+							}
+							
+							
+							Jedis jed=pool.getResource();
+							
+							
+							if(jed.get(med.get_client_num())==null/*&&jed.get(med.get_client_num()+"h")!=null*/&&jed.exists(med.get_client_num()+"h")){
+								jed.del(med.get_client_num()+"h");
+								jed.set(med.get_client_num()+"c","changed");
+								med.get_res_tab().get_mid_display().getSelectionModel().select(null);	
+							}
 							
 							
 							
+							Set<String> clientz=jed.smembers("cs");
+						
+					    for(String s:clientz){			
+								if(!s.equals(med.get_client_num())){
+									if(jed.get(s+"c")!=null){
+										med.get_res_tab().get_search_button().fire();
+										
+										jed.del(s+"c");
+									}
+									
+									
+									
+									
+									
+									
+									
+								}
+							}
 							
-						}
+							jed.close();
+							 }
+						
                 		
                 	});
                 	try{Thread.sleep(100);}
@@ -301,15 +491,12 @@ public class Res_control {
         				break;
         			}
                 } 
+              
             }
         });
-		med.get_main_stage().setOnCloseRequest(new EventHandler<WindowEvent>() {
-		    @Override public void handle(WindowEvent t) {
-		        th.interrupt();
-		    }
-		});
-		th.start();
 		
+		
+	
 	}
 	
 	void set_service_boxes(){
@@ -374,6 +561,51 @@ public class Res_control {
 		}
 		return price;
 		
+	}
+	
+	@SuppressWarnings("unchecked")
+	void set_listener(){
+		Map<String, String> map = new HashMap<>(); 
+		Jedis jed=new Jedis("localhost");
+		
+		
+		med.get_res_tab().get_mid_display().getSelectionModel().selectedItemProperty().addListener((obs, old_sel, new_sel) -> {
+		    if (new_sel != null) {
+		    	
+		    	 String  from_str;
+				 String to_str;
+		    	
+		    	 ObservableList<String> row=(ObservableList<String>) new_sel;
+		    	 from_str="'"+med.get_res_tab().get_from_y().getValue()+"-"+med.get_res_tab().get_from_m().getValue()+"-"+med.get_res_tab().get_from_d().getText()+"'";
+		    	 to_str="'"+med.get_res_tab().get_to_y().getValue()+"-"+med.get_res_tab().get_to_m().getValue()+"-"+med.get_res_tab().get_to_d().getText()+"'";
+		    	 
+		    	 
+		    	 
+		    	 
+		         map.put("room", row.get(0));  
+		         map.put("from", from_str);  
+		         map.put("to", to_str); 
+		         try {  
+		             jed.hmset(med.get_client_num()+"h", map);  
+		             jed.set(med.get_client_num(), "locked");
+		             jed.expire(med.get_client_num(), med.lock_time);
+		             jed.set(med.get_client_num()+"c", "changed");
+		             
+		           
+		             
+		             
+		             
+		   
+		         } catch (JedisException e) {  
+		        	 ((Label)med.get_pop_win().getScene().getRoot()).setText("Redis error");
+			    	 med.get_pop_win().show();
+		         }  
+		         
+		         jed.close();
+		         
+		    }
+		});
+
 	}
 	
 }

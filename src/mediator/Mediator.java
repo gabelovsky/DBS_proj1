@@ -10,12 +10,15 @@ package mediator;
 import javafx.scene.control.Tab;
 import javafx.stage.Stage;
 
+
 public class Mediator {
 	
+	
+	public final int lock_time =5;
 	private String database="jdbc:postgresql://localhost/dbs_proj";
 	private String user = "postgres";
     private String password = "postgres";
-	
+	private String client_num = "";
 	
 	Tab res_tab;
 	Tab search_tab;
@@ -26,6 +29,11 @@ public class Mediator {
 	gui.Connect_win conn_win;
 	
 	public Mediator(gui.Tabs tabs,Stage main_stage,Stage pop_win,Stage serv_win,Stage conn_win){
+		
+		
+		
+		
+		
 		res_tab=tabs.get_res_tab();
 		search_tab=tabs.get_search_tab();
 		edit_tab=tabs.get_edit_tab();
@@ -42,6 +50,9 @@ public class Mediator {
 	}
 	public void set_password(String password){
 		this.password=password;
+	}
+	public void set_client_num(String client_num){
+		this.client_num=client_num;
 	}
 	public gui.Res_tab get_res_tab(){
 		return (gui.Res_tab) res_tab;
@@ -74,6 +85,9 @@ public class Mediator {
 	}
 	public String get_password(){
 		return password;
+	}
+	public String get_client_num(){
+		return client_num;
 	}
 	
 }

@@ -3,8 +3,11 @@ package control;
 import java.sql.Connection;
 import java.sql.DriverManager;
 
+import javafx.event.EventHandler;
 import javafx.scene.control.Label;
+import javafx.stage.WindowEvent;
 import mediator.Mediator;
+import redis.clients.jedis.Jedis;
 
 public class Conn_control {
 
@@ -31,6 +34,46 @@ public class Conn_control {
 	    		med.get_pop_win().show();
 	    		return;}
 		});
+	}
+	
+	void set_client(){
+		//set client name and add to redis
+		Jedis jed=new Jedis("localhost");;
+		for (int i=0;i<=jed.scard("cs");i++){
+			if(!jed.sismember("cs","c"+i)){
+				jed.sadd("cs", "c"+i);
+				med.set_client_num("c"+i);
+				break;
+	
+			}
+			
+		}	
+		jed.close();
+	
+	}
+	
+	
+	
+	void set_closes(){
+		
+		med.get_pop_win().setOnCloseRequest(new EventHandler<WindowEvent>() {
+	          public void handle(WindowEvent we) {
+	        	 
+	        	  med.get_pop_win().setTitle("Error:");
+	          }
+	    });
+		
+		
+		med.get_conn_win().setOnCloseRequest(new EventHandler<WindowEvent>() {
+	          public void handle(WindowEvent we) {
+	        	 
+	           med.get_main_stage().fireEvent(new WindowEvent(
+	        		   med.get_main_stage(),
+	        	        WindowEvent.WINDOW_CLOSE_REQUEST
+	        	    ));
+	          
+	          }
+	    });
 	}
 
 }

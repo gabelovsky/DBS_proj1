@@ -1,13 +1,15 @@
 package gui;
 
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
-
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import mediator.Mediator;
+
 
 public class Main_gui extends Application{
 
@@ -24,6 +26,7 @@ public class Main_gui extends Application{
 		
 		Pop_win pop_win=new Pop_win();
 		pop_win.new_window();
+		
 		pop_win.initModality(Modality.WINDOW_MODAL);
 		pop_win.initOwner(main_stage);
 		
