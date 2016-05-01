@@ -20,6 +20,7 @@ public class Main_control {
 		res.set_service_boxes();
 		res.set_total_thread();
 		res.set_listener();
+		res.set_date_listener();
 		res.set_jedis_thread();
 		Search_control sea=new Search_control(med);
 		sea.set_room();

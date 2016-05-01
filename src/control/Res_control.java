@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -41,17 +42,25 @@ public class Res_control {
 		
 		med.get_res_tab().get_search_button().setOnAction(new EventHandler<ActionEvent>() { 
 		   
+			@SuppressWarnings("unchecked")
 			@Override
 		    public void handle(ActionEvent e) {
 		    	try {
 		    		
-		    		if(!jed_th.isAlive())
+		    		if(jed_th.getState()==Thread.State.NEW){
 		    			jed_th.start();
+		    		}
+		    		
 		    		running=false;
 		    		
 		    		
-		    		
-		    		
+		    		int sel_ind=-1;
+		    		int sel_room = -1;
+		    		if(med.get_res_tab().get_mid_display().getSelectionModel().getSelectedItem()!=null){
+		    			sel_ind=med.get_res_tab().get_mid_display().getSelectionModel().getSelectedIndex();		
+		    			ObservableList<String> row=(ObservableList<String>) med.get_res_tab().get_mid_display().getSelectionModel().getSelectedItem();
+		    			sel_room=Integer.parseInt(row.get(0));
+		    		}
 		    	  
 		    	
 		    	
@@ -208,8 +217,22 @@ public class Res_control {
 					
 					
 					Table_fill.set_table(rs,columns, med.get_res_tab().get_mid_display());
-					
-
+					int new_room=-1;
+					if(sel_ind!=-1){
+						int index=0;
+						while(new_room!=sel_room){
+							med.get_res_tab().get_mid_display().getSelectionModel().select(index);
+							jed.del(med.get_client_num()+"c");
+							ObservableList<String> row=(ObservableList<String>) med.get_res_tab().get_mid_display().getSelectionModel().getSelectedItem();
+			    			new_room=Integer.parseInt(row.get(0));
+							index++;
+							
+						}
+						
+						
+						
+						
+					}
 		    		
 					
 					running=true;
@@ -217,6 +240,10 @@ public class Res_control {
 					rs.close();
 					st.close();
 					conn.close();
+					
+					
+					
+					
 					
 				} catch (SQLException e1) {	
 					e1.printStackTrace();
@@ -453,8 +480,8 @@ public class Res_control {
 							
 							Jedis jed=pool.getResource();
 							
-							
-							if(jed.get(med.get_client_num())==null/*&&jed.get(med.get_client_num()+"h")!=null*/&&jed.exists(med.get_client_num()+"h")){
+							//timeout
+							if(jed.get(med.get_client_num())==null&&jed.exists(med.get_client_num()+"h")){
 								jed.del(med.get_client_num()+"h");
 								jed.set(med.get_client_num()+"c","changed");
 								med.get_res_tab().get_mid_display().getSelectionModel().select(null);	
@@ -463,7 +490,7 @@ public class Res_control {
 							
 							
 							Set<String> clientz=jed.smembers("cs");
-						
+						//"listener"
 					    for(String s:clientz){			
 								if(!s.equals(med.get_client_num())){
 									if(jed.get(s+"c")!=null){
@@ -496,7 +523,7 @@ public class Res_control {
         });
 		
 		
-	
+		
 	}
 	
 	void set_service_boxes(){
@@ -606,6 +633,18 @@ public class Res_control {
 		    }
 		});
 
+	}
+	
+	void set_date_listener(){
+		ChangeListener<String> listener =(observable, oldValue, newValue) ->{
+			med.get_res_tab().get_mid_display().getColumns().clear();	  
+		};
+		med.get_res_tab().get_from_d().textProperty().addListener(listener);
+		med.get_res_tab().get_to_d().textProperty().addListener(listener);
+		med.get_res_tab().get_from_m().valueProperty().addListener(listener);
+		med.get_res_tab().get_from_y().valueProperty().addListener(listener);
+		med.get_res_tab().get_to_m().valueProperty().addListener(listener);
+		med.get_res_tab().get_to_y().valueProperty().addListener(listener);
 	}
 	
 }

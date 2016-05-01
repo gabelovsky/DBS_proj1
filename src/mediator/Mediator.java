@@ -14,7 +14,7 @@ import javafx.stage.Stage;
 public class Mediator {
 	
 	
-	public final int lock_time =5;
+	public final int lock_time =50;
 	private String database="jdbc:postgresql://localhost/dbs_proj";
 	private String user = "postgres";
     private String password = "postgres";
